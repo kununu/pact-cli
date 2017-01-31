@@ -28,8 +28,8 @@ export function getParsedArgs(version) {
   parser.addArgument(
     [ '-p', '--glob-pattern' ],
     {
-      help: 'Set the glob pattern for pact files (default: **/*.interaction.js',
-      defaultValue: '*.interaction.json'
+      help: 'Set the glob pattern for pact files (default: **/*.interaction.json',
+      defaultValue: '**/*.interaction.json'
     }
   );
 
