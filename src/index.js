@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 import path from 'path';
 import {die, getParsedArgs, readJSON} from './helpers';
 import setupServers, {getInteractionsPromise} from './setupServers';
