@@ -6,9 +6,9 @@ export function die(msg, code=1) {
   process.exit(code);
 }
 
-export function getParsedArgs() {
+export function getParsedArgs(version) {
   var parser = new ArgumentParser({
-    version: '0.0.1',
+    version: version,
     addHelp:true,
     description: 'Pact Dev Server'
   });
@@ -16,28 +16,32 @@ export function getParsedArgs() {
   parser.addArgument(
     [ '-f', '--file' ],
     {
-      help: 'Start server with Serverfile (default: ./servers.json)'
+      help: 'Start server with Serverfile (default: ./servers.json)',
+      defaultValue: './servers.json'
     }
   );
 
   parser.addArgument(
     [ '-p', '--glob' ],
     {
-      help: 'Set the glob pattern for pact files (default: **/*.interaction.js'
+      help: 'Set the glob pattern for pact files (default: **/*.interaction.js',
+      defaultValue: '**/*.interaction.js'
     }
   );
 
   parser.addArgument(
     [ '-d', '--contractdir' ],
     {
-      help: 'Set the Contracts directory (default: ./pacts)'
+      help: 'Set the Contracts directory (default: ./pacts)',
+      defaultValue: './pacts'
     }
   );
 
   parser.addArgument(
     [ '-l', '--logpath' ],
     {
-      help: 'Set the logpath (default: ./pact-dev-server.log)'
+      help: 'Set the logpath (default: ./pact-dev-server.log)',
+      defaultValue: './pact-dev-server.log'
     }
   );
 
