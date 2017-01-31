@@ -6,7 +6,7 @@ export function die(msg, code=1) {
   process.exit(code);
 }
 
-export function parseArgs() {
+export function getParsedArgs() {
   var parser = new ArgumentParser({
     version: '0.0.1',
     addHelp:true,

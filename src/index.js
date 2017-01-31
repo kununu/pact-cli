@@ -1,4 +1,3 @@
-import {die, parseArgs} from './helpers.js';
+import {die, getParsedArgs, readJSON} from './helpers.js';
+const args = getParsedArgs();
 
-const args = parseArgs();
-console.log(args.test);
