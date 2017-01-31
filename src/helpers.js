@@ -1,4 +1,5 @@
 import {ArgumentParser} from 'argparse';
+import fs from 'fs';
 
 export function die(msg, code=1) {
   process.stdout.write(`${msg}\n`);
@@ -23,5 +24,12 @@ export function parseArgs() {
 }
 
 export function readJSON(path) {
+  if (!fs.existsSync(path))
+    die(`File ${path} does not exist`);
 
+  try {
+    return JSON.parse(fs.readFileSync(path, 'utf-8'));
+  } catch(err) {
+    die(`Malformed JSON in ${path} \n${err}`)
+  }
 }
