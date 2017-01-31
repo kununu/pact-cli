@@ -33,20 +33,26 @@ export default function setupServers(args, servers, interactions) {
       provider: specs.provider
     });
 
-    const interaction = interactions.find(interaction => {
+    const filteredInteractions = interactions.filter(interaction => {
       return specs.consumer == interaction.consumer &&
         specs.provider == interaction.provider;
     });
 
-    mockserver.start().then(() => {
-      log(`Server for ${interaction.provider} -> ${interaction.consumer} started on port:${specs.port}`);
-      const consumer = interaction.consumer;
-      const provider = interaction.provider;
-      const port = specs.port;
+    if (filteredInteractions.length > 0) {
+      mockserver.start().then(() => {
+        log(`Server for ${specs.provider} -> ${specs.consumer} started on port:${specs.port}`);
+        filteredInteractions.forEach(interaction => {
+          const consumer = interaction.consumer;
+          const provider = interaction.provider;
+          const port = specs.port;
 
-      const pactProvider = Pact({consumer, provider, port});
-      log(`Add Interaction "${interaction.interaction.state}" for ${provider} -> ${consumer}`);
-      pactProvider.addInteraction(interaction.interaction);
-    });
+          const pactProvider = Pact({consumer, provider, port});
+          log(`Add Interaction "${interaction.interaction.state}" for ${provider} -> ${consumer}`);
+          pactProvider.addInteraction(interaction.interaction);
+        });
+      });
+    } else {
+      log(`No Interactions for ${specs.provider} -> ${specs.consumer} found - not starting server`);
+    }
   });
 }
