@@ -21,24 +21,22 @@ export function getInteractionsPromise(args) {
 }
 
 export default function setupServers(args, servers, interactions) {
-  let mockservers = [];
-
   servers.forEach(specs => {
-    const mockserver = wrapper.createServer({
-      port: specs.port,
-      log: args.log_path,
-      dir: args.contract_dir,
-      spec: specs.spec,
-      consumer: specs.consumer,
-      provider: specs.provider
-    });
-
     const filteredInteractions = interactions.filter(interaction => {
       return specs.consumer == interaction.consumer &&
         specs.provider == interaction.provider;
     });
 
     if (filteredInteractions.length > 0) {
+      const mockserver = wrapper.createServer({
+        port: specs.port,
+        log: args.log_path,
+        dir: args.contract_dir,
+        spec: specs.spec,
+        consumer: specs.consumer,
+        provider: specs.provider
+      });
+
       mockserver.start().then(() => {
         log(`Server for ${specs.provider} -> ${specs.consumer} started on port:${specs.port}`);
         filteredInteractions.forEach(interaction => {
@@ -52,7 +50,7 @@ export default function setupServers(args, servers, interactions) {
         });
       });
     } else {
-      log(`No Interactions for ${specs.provider} -> ${specs.consumer} found - not starting server`);
+      log(`No Interactions for ${specs.provider} -> ${specs.consumer} found - not creating server`);
     }
   });
 }
