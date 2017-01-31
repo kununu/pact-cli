@@ -37,7 +37,6 @@ export default function setupServers(args, servers, interactions) {
     mockservers.push(mockserver);
 
     mockserver.start().then(() => {
-      console.log(st,st2,st3);
       log(`Server ${mockserver.__devserverId} started`);
     });
   });
