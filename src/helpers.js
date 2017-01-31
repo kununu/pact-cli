@@ -29,7 +29,7 @@ export function getParsedArgs(version) {
     [ '-p', '--glob-pattern' ],
     {
       help: 'Set the glob pattern for pact files (default: **/*.interaction.js',
-      defaultValue: '**/*.interaction.js'
+      defaultValue: '*.interaction.json'
     }
   );
 
