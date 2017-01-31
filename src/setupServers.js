@@ -33,27 +33,20 @@ export default function setupServers(args, servers, interactions) {
       provider: specs.provider
     });
 
-    mockserver.__devserverId = `${specs.consumer}:${specs.provider}`;
-    mockservers.push(mockserver);
+    const interaction = interactions.find(interaction => {
+      return specs.consumer == interaction.consumer &&
+        specs.provider == interaction.provider;
+    });
 
     mockserver.start().then(() => {
-      log(`Server ${mockserver.__devserverId} started`);
-    });
-  });
-  // get resolved too fast ?
-  Promise.all(mockservers).then((resolvedServers) => {
-    resolvedServers.forEach(startedServer => {
-      interactions.forEach(interaction => {
-        if (startedServer._options.consumer == interaction.consumer &&
-        startedServer._options.provider == interaction.provider) {
-          const consumer = interaction.consumer;
-          const provider = interaction.provider;
-          const port = startedServer._options.port;
-          const pactProvider = Pact({consumer, provider, port});
-          log(`Add Interaction for ${consumer} ${provider} ${port}`);
-          pactProvider.addInteraction(interaction.interaction);
-        }
-      });
+      log(`Server for ${interaction.provider} -> ${interaction.consumer} started on port:${specs.port}`);
+      const consumer = interaction.consumer;
+      const provider = interaction.provider;
+      const port = specs.port;
+
+      const pactProvider = Pact({consumer, provider, port});
+      log(`Add Interaction "${interaction.interaction.state}" for ${provider} -> ${consumer}`);
+      pactProvider.addInteraction(interaction.interaction);
     });
   });
 }
