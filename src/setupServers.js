@@ -40,12 +40,12 @@ export default function setupServers(args, servers, interactions) {
       mockserver.start().then(() => {
         log(`Server for ${specs.provider} -> ${specs.consumer} started on port:${specs.port}`);
         filteredInteractions.forEach(interaction => {
-          const consumer = interaction.consumer;
-          const provider = interaction.provider;
-          const port = specs.port;
-
-          const pactProvider = Pact({consumer, provider, port});
-          log(`Add Interaction "${interaction.interaction.state}" for ${provider} -> ${consumer}`);
+          const pactProvider = Pact({
+            consumer:interaction.consumer,
+            provider:interaction.provider,
+            port:specs.port
+          });
+          log(`Add Interaction "${interaction.interaction.state}" for ${interaction.provider} -> ${interaction.consumer}`);
           pactProvider.addInteraction(interaction.interaction);
         });
       });
