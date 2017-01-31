@@ -14,9 +14,30 @@ export function getParsedArgs() {
   });
 
   parser.addArgument(
-    [ '-t', '--test' ],
+    [ '-f', '--file' ],
     {
-      help: 'testing'
+      help: 'Start server with Serverfile (default: ./servers.json)'
+    }
+  );
+
+  parser.addArgument(
+    [ '-p', '--glob' ],
+    {
+      help: 'Set the glob pattern for pact files (default: **/*.interaction.js'
+    }
+  );
+
+  parser.addArgument(
+    [ '-d', '--contractdir' ],
+    {
+      help: 'Set the Contracts directory (default: ./pacts)'
+    }
+  );
+
+  parser.addArgument(
+    [ '-l', '--logpath' ],
+    {
+      help: 'Set the logpath (default: ./pact-dev-server.log)'
     }
   );
 
