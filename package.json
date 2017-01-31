@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "start": "node ./dist/index.js",
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
     "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build\""
   },
@@ -26,7 +27,8 @@
     "watch-cli": "^0.2.1"
   },
   "dependencies": {
-    "pact": "^1.0.0-rc.5",
-    "@pact-foundation/pact-node": "^4.6.0"
+    "@pact-foundation/pact-node": "^4.6.0",
+    "argparse": "^1.0.9",
+    "pact": "^1.0.0-rc.5"
   }
 }
