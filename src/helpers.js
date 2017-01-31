@@ -1,8 +1,12 @@
 import {ArgumentParser} from 'argparse';
 import fs from 'fs';
 
-export function die(msg, code=1) {
+export function log(msg) {
   process.stdout.write(`${msg}\n`);
+}
+
+export function die(msg, code=1) {
+  process.stderr.write(`${msg}\n`);
   process.exit(code);
 }
 
@@ -22,7 +26,7 @@ export function getParsedArgs(version) {
   );
 
   parser.addArgument(
-    [ '-p', '--glob' ],
+    [ '-p', '--glob-pattern' ],
     {
       help: 'Set the glob pattern for pact files (default: **/*.interaction.js',
       defaultValue: '**/*.interaction.js'
@@ -30,7 +34,7 @@ export function getParsedArgs(version) {
   );
 
   parser.addArgument(
-    [ '-d', '--contractdir' ],
+    [ '-d', '--contract-dir' ],
     {
       help: 'Set the Contracts directory (default: ./pacts)',
       defaultValue: './pacts'
@@ -38,7 +42,7 @@ export function getParsedArgs(version) {
   );
 
   parser.addArgument(
-    [ '-l', '--logpath' ],
+    [ '-l', '--log-path' ],
     {
       help: 'Set the logpath (default: ./pact-dev-server.log)',
       defaultValue: './pact-dev-server.log'
