@@ -1,8 +1,8 @@
 # pact-dev-server
 
-A CLI Tool to start a API mock server via pact interaction files.
-Awaits a `servers.json` file at the rootpath where the command gets executed (or given file via --file parameter)
-Searches for `**/*.interaction.json` glob by default (or given pattern via --glob-pattern)
+A CLI Tool to start a API mock server via pact interaction files.  
+Awaits a `servers.json` file at the current working directory (or given file via --file parameter)  
+Searches for `**/*.interaction.json` glob by default (or given pattern via --glob-pattern)  
 
 ## Servers File Structure
 ```
@@ -35,6 +35,7 @@ Searches for `**/*.interaction.json` glob by default (or given pattern via --glo
 
 ## Installation 
 - clone repository
+- `npm install`
 - `npm run build`
 - `npm link`
 
