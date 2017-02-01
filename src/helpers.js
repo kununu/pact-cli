@@ -17,6 +17,13 @@ export function getParsedArgs(version) {
     description: 'Pact Dev Server'
   });
 
+   parser.addArgument(
+    [ '-n', '--new' ],
+    {
+      help: 'Create a new Interaction File'
+    }
+  );
+
   parser.addArgument(
     [ '-f', '--file' ],
     {
@@ -50,6 +57,14 @@ export function getParsedArgs(version) {
   );
 
   return parser.parseArgs();
+}
+
+export function writeJSON(obj, path) {
+  try {
+    fs.writeFileSync(path, JSON.stringify(obj, null, 2));
+  } catch(err) {
+    die(`Error while saving JSON File: \n${err}`);
+  }
 }
 
 export function readJSON(path) {
