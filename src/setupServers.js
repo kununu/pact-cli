@@ -5,6 +5,7 @@ import {log, readJSON} from './helpers';
 
 export function getInteractionsPromise(args) {
   return new Promise((resolve, reject) => {
+    log(`Searching for interaction files ...`);
     const interactions = [];
     glob(args.glob_pattern, {ignore: 'node_modules/'}, (err, files) => {
       if (err) {
@@ -21,6 +22,7 @@ export function getInteractionsPromise(args) {
 }
 
 export default function setupServers(args, servers, interactions) {
+  log(`Startup Servers ...`);
   servers.forEach(specs => {
     const filteredInteractions = interactions.filter(interaction => {
       return specs.consumer == interaction.consumer &&

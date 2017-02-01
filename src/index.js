@@ -15,6 +15,6 @@ if (args.new) {
 } else {
   getInteractionsPromise(args).then((interactions) => {
     setupServers(args, servers, interactions);
-  }, (err) =>  { console.log(err) });  
+  }, (err) =>  { console.log(err) });
 }
 
