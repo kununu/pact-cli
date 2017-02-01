@@ -42,3 +42,4 @@ Searches for `**/*.interaction.json` glob by default (or given pattern via --glo
 ## TODO
  - Silent mode
  - "--start-after" parameter (for JEST)
+ - publishing interactions
