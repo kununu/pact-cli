@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "bin": {
-    "pact-dev-server": "dist/index.js"
+    "pact-dev-server": "dist/cli.js"
   },
   "scripts": {
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",

@@ -1,6 +1,86 @@
 import fs from 'fs';
 import prompt from 'prompt';
-import {writeJSON, log} from './helpers';
+import {getConfig, writeJSON, log} from './helpers';
+import pact from '@pact-foundation/pact-node';
+import path from 'path';
+
+export function brokerPublishWizard(pushfile) {
+  const config = getConfig();
+
+  const schema = {
+    properties: {
+      consumerVersion: {
+        message: 'A string containing a semver-style version',
+        required: true
+      },
+      tags: {
+        message: 'Comma seperated List of strings'
+      }
+    }
+  }
+
+  prompt.start();
+  prompt.get(schema, function (err, res) {  
+    const opts = {
+      pactUrls: [path.resolve(process.cwd(), pushfile)],
+      pactBroker: config.brokerUrl,
+      consumerVersion: res.consumerVersion
+    }
+
+    if (res.tags.trim() !== '') {
+      Object.assign(opts, {
+        tags: res.tags.split(','),
+      });
+    }
+    
+    if (config.brokerUser.trim() !== '') {
+      Object.assign(opts, {
+        pactBrokerUsername: config.brokerUser,
+        pactBrokerPassword: config.brokerPassword
+      });
+    }
+
+    pact.publishPacts(opts).then((pact) => {
+      log('=================================================================================');
+      log(`Pact ${pushfile} Published`);
+      log('=================================================================================');
+      console.log(JSON.stringify(pact, null, 2));
+      log('=================================================================================');
+    });
+
+  });
+}
+
+export function brokerconfigWizard() {
+  const schema = {
+    properties: {
+      brokerUrl: {
+        message: 'URL to fetch the provider states for the given provider API.',
+        default: 'test-frontend'
+      },
+      brokerUser: {
+        message: 'Username for Pact Broker basic authentication.'
+      },
+      brokerPassword: {
+        message: 'Password for Pact Broker basic authentication'
+      }
+    }
+  }
+  prompt.start();
+  prompt.get(schema, function (err, res) {
+    const config = {
+      brokerUrl: res.brokerUrl,
+      brokerUser: res.brokerUser,
+      brokerPassword: res.brokerPassword
+    }
+
+    const HOME = process.env.HOME || process.env.USERPROFILE;
+    const CONFIGPATH = `${HOME}/.pact-dev-server`;
+
+    writeJSON(config, CONFIGPATH);
+    log(`Config written @ ${CONFIGPATH}`)
+  });
+}
 
 export function interactionWizard(name) {
   const path = `${name}.interaction.json`;

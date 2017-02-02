@@ -1,6 +1,16 @@
 import {ArgumentParser} from 'argparse';
 import fs from 'fs';
 
+export function getConfig() {
+  const HOME = process.env.HOME || process.env.USERPROFILE;
+  const CONFIGFILE = `${HOME}/.pact-dev-server`;
+  
+  if (!fs.existsSync(CONFIGFILE))
+    die(`You have no broker-configfile yet \ngenerate one with 'pact-dev-server --broker-config'`)
+
+  return readJSON(CONFIGFILE);
+}
+
 export function log(msg) {
   process.stdout.write(`${msg}\n`);
 }
@@ -17,10 +27,17 @@ export function getParsedArgs(version) {
     description: 'Pact Dev Server'
   });
 
-   parser.addArgument(
+  parser.addArgument(
+    ['--publish'],
+    {
+      help: 'Publish a file to a broker (Configurationfile required)'
+    }
+  );
+
+  parser.addArgument(
     [ '-n', '--new' ],
     {
-      help: 'Create a new Interaction File'
+      help: 'Interaction file generator'
     }
   );
 
@@ -33,7 +50,7 @@ export function getParsedArgs(version) {
   );
 
   parser.addArgument(
-    [ '-p', '--glob-pattern' ],
+    [ '-g', '--glob-pattern' ],
     {
       help: 'Set the glob pattern for pact files (default: **/*.interaction.json',
       defaultValue: '**/*.interaction.json'
@@ -53,6 +70,13 @@ export function getParsedArgs(version) {
     {
       help: 'Set the logpath (default: ./pact-dev-server.log)',
       defaultValue: './pact-dev-server.log'
+    }
+  );
+
+  parser.addArgument(
+    ['--broker-config' ],
+    {
+      help: 'Broker Config generator (saved in ~/.pact-dev-server)'
     }
   );
 
