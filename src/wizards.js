@@ -3,6 +3,7 @@ import prompt from 'prompt';
 import {getConfig, writeJSON, log} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
+import {exec} from 'child_process';
 
 export function brokerPublishWizard(pushfile) {
   const config = getConfig();
@@ -32,7 +33,7 @@ export function brokerPublishWizard(pushfile) {
         tags: res.tags.split(','),
       });
     }
-    
+
     if (config.brokerUser.trim() !== '') {
       Object.assign(opts, {
         pactBrokerUsername: config.brokerUser,
@@ -78,7 +79,7 @@ export function brokerconfigWizard() {
     const CONFIGPATH = `${HOME}/.pact-dev-server`;
 
     writeJSON(config, CONFIGPATH);
-    log(`Config written @ ${CONFIGPATH}`)
+    log(`Config written @ ${CONFIGPATH}`);
   });
 }
 
@@ -146,5 +147,6 @@ export function interactionWizard(name) {
       }
     }
     writeJSON(pact, path);
+    exec(`open ${path}`);
   });
 }

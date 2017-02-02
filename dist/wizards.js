@@ -25,6 +25,8 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _child_process = require('child_process');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function brokerPublishWizard(pushfile) {
@@ -165,5 +167,6 @@ function interactionWizard(name) {
       }
     };
     (0, _helpers.writeJSON)(pact, path);
+    (0, _child_process.exec)('open ' + path);
   });
 }
