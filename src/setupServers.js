@@ -45,7 +45,8 @@ export default function setupServers(args, servers, interactions) {
             provider:interaction.provider,
             port:specs.port
           });
-          log(`Add Interaction "${interaction.interaction.state}" for ${interaction.provider} -> ${interaction.consumer}`);
+          const url =`(${interaction.interaction.withRequest.method}) http://localhost:${specs.port}${interaction.interaction.withRequest.path}`
+          log(`Add Interaction "${interaction.interaction.state}" on ${url}`);
           pactProvider.addInteraction(interaction.interaction);
         });
       });
