@@ -3,16 +3,17 @@
 import path from 'path';
 import {die, getParsedArgs, readJSON} from './helpers';
 import setupServers, {getInteractionsPromise} from './setupServers';
-import {brokerPublishWizard, interactionWizard, brokerconfigWizard} from './wizards';
+import {brokerPublishWizard, interactionWizard, brokerConfigWizard} from './wizards';
 import glob from 'glob';
 
 const pkg = readJSON(path.resolve(__dirname, '../package.json'));
 const args = getParsedArgs(pkg.version);
+args.log_path = path.resolve(process.cwd(), args.log_path);
 
 if (args.new) {
   interactionWizard(args.new);
 } else if (args.broker_config) {
-  brokerconfigWizard();
+  brokerConfigWizard();
 } else if (args.publish) {
   brokerPublishWizard(args.publish);
 } else {

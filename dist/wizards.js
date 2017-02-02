@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.brokerPublishWizard = brokerPublishWizard;
-exports.brokerconfigWizard = brokerconfigWizard;
+exports.brokerConfigWizard = brokerConfigWizard;
 exports.interactionWizard = interactionWizard;
 
 var _fs = require('fs');
@@ -75,12 +75,11 @@ function brokerPublishWizard(pushfile) {
   });
 }
 
-function brokerconfigWizard() {
+function brokerConfigWizard() {
   var schema = {
     properties: {
       brokerUrl: {
-        message: 'URL to fetch the provider states for the given provider API.',
-        default: 'test-frontend'
+        message: 'URL to fetch the provider states for the given provider API'
       },
       brokerUser: {
         message: 'Username for Pact Broker basic authentication.'

@@ -21,11 +21,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var pkg = (0, _helpers.readJSON)(_path2.default.resolve(__dirname, '../package.json'));
 var args = (0, _helpers.getParsedArgs)(pkg.version);
+args.log_path = _path2.default.resolve(process.cwd(), args.log_path);
 
 if (args.new) {
   (0, _wizards.interactionWizard)(args.new);
 } else if (args.broker_config) {
-  (0, _wizards.brokerconfigWizard)();
+  (0, _wizards.brokerConfigWizard)();
 } else if (args.publish) {
   (0, _wizards.brokerPublishWizard)(args.publish);
 } else {

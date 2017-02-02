@@ -52,12 +52,11 @@ export function brokerPublishWizard(pushfile) {
   });
 }
 
-export function brokerconfigWizard() {
+export function brokerConfigWizard() {
   const schema = {
     properties: {
       brokerUrl: {
-        message: 'URL to fetch the provider states for the given provider API.',
-        default: 'test-frontend'
+        message: 'URL to fetch the provider states for the given provider API'
       },
       brokerUser: {
         message: 'Username for Pact Broker basic authentication.'
