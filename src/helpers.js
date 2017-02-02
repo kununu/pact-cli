@@ -1,22 +1,51 @@
 import {ArgumentParser} from 'argparse';
 import fs from 'fs';
 
-export function die(msg, code=1) {
+export function log(msg) {
   process.stdout.write(`${msg}\n`);
+}
+
+export function die(msg, code=1) {
+  process.stderr.write(`${msg}\n`);
   process.exit(code);
 }
 
-export function getParsedArgs() {
+export function getParsedArgs(version) {
   var parser = new ArgumentParser({
-    version: '0.0.1',
+    version: version,
     addHelp:true,
     description: 'Pact Dev Server'
   });
 
   parser.addArgument(
-    [ '-t', '--test' ],
+    [ '-f', '--file' ],
     {
-      help: 'testing'
+      help: 'Start server with Serverfile (default: ./servers.json)',
+      defaultValue: './servers.json'
+    }
+  );
+
+  parser.addArgument(
+    [ '-p', '--glob-pattern' ],
+    {
+      help: 'Set the glob pattern for pact files (default: **/*.interaction.json',
+      defaultValue: '**/*.interaction.json'
+    }
+  );
+
+  parser.addArgument(
+    [ '-d', '--contract-dir' ],
+    {
+      help: 'Set the Contracts directory (default: ./pacts)',
+      defaultValue: './pacts'
+    }
+  );
+
+  parser.addArgument(
+    [ '-l', '--log-path' ],
+    {
+      help: 'Set the logpath (default: ./pact-dev-server.log)',
+      defaultValue: './pact-dev-server.log'
     }
   );
 

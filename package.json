@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "bin": {
+    "pact-dev-server": "dist/index.js"
+  },
   "scripts": {
-    "start": "node ./dist/index.js",
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
     "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build\""
   },
