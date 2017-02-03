@@ -1,37 +1,6 @@
 # pact-dev-server
 
 A CLI Tool to start a API mock server via pact interaction files.  
-Awaits a `servers.json` file at the current working directory (or given file via --file parameter)  
-Searches for `**/*.interaction.json` glob by default (or given pattern via --glob-pattern)  
-
-## Servers File Structure
-```
-[
-  {
-    "consumer": "frontend",
-    "provider": "backend",
-    "port": 8888,
-    "spec": 3
-  }
-]
-```
-
-## Arguments
-```
--h, --help            Show this help message and exit.
--v, --version         Show program's version number and exit.
--n NEW, --new         Interaction File Wizard
--f FILE, --file FILE  Start server with Serverfile (default: ./servers.json)
-
--p GLOB_PATTERN, --glob-pattern GLOB_PATTERN
-                      Set the glob pattern for pact files (default: **/*.interaction.json
-
--d CONTRACT_DIR, --contract-dir CONTRACT_DIR
-                      Set the Contracts directory (default: ./pacts)
-
--l LOG_PATH, --log-path LOG_PATH
-                      Set the logpath (default: ./pact-dev-server.log)
-```
 
 ## Installation 
 - clone repository
@@ -39,7 +8,37 @@ Searches for `**/*.interaction.json` glob by default (or given pattern via --glo
 - `npm run build`
 - `npm link`
 
+## Development
+`npm run dev`
+
+## Sub-Commands
+
+### server
+```pact-dev-server server (start|add)```
+
+- `server add` starts an interactive serverwizard which creates a new serverfile or adds additional servers to it.
+  - optional arguments: 
+    - `-f ./path-to-serverfile`
+
+- `server start` searches your directory for *.interaction.json files and starts an PACT Mock API Server
+  - optional arguments: 
+    - `-f | --file ./path-to-serverfile`
+    - `-g | --glob **/*.interaction.json` (glob pattern for searching files)
+    - `-l | --log-path ./pact-dev-server.log` (path to logfile)
+    - `-d | --contract-dir ./pacts` (path for server-written pacts)
+
+### new
+```pact-dev-server new INTERACTION_NAME ```
+- Starts an step-by-step generator for generating an interactionfile
+
+### config
+```pact-dev-server config```
+- Starts an step-by-step config generator (brokerserver url + auth)
+- Configfile will be stored in your `$HOME` directory (~/.pact-dev-server)
+
+### publish
+```pact-dev-server publish PACT_FILE```
+- Starts an step-to-step publish generator and publishes a server generated PACT File to a Broker (configurationfile needed)
+
 ## TODO
  - Silent mode
- - "--start-after" parameter (for JEST)
- - publishing interactions
