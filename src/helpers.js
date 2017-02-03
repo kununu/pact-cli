@@ -26,7 +26,7 @@ export function getParsedArgs(version) {
   var parser = new ArgumentParser({
     version: version,
     addHelp:true,
-    description: 'Argparse examples: sub-commands',
+    description: 'CLI Tool to start an API Mock Server via PACT interaction Files and communicating with PACT Brokers',
   });
    
   var subparsers = parser.addSubparsers({
@@ -41,45 +41,45 @@ export function getParsedArgs(version) {
 
   cmdServer.addArgument(['CHOICE'], {
     action: 'store',
-    help: 'Server with File',
+    help: '',
     choices: ['start', 'add']
   });
 
   cmdServer.addArgument(['-f', '--file'], {
     action: 'store',
-    help: 'Server with File',
+    help: 'Path to your Serverfile',
     metavar: 'SERVERFILE',
     defaultValue: './servers.json'
   });
 
   cmdServer.addArgument(['-g', '--glob'], {
     action: 'store',
-    help: 'Set the glob pattern for pact files (default: **/*.interaction.json',
+    help: 'Search glob for interaction files (default: **/*.interaction.json',
     defaultValue: '**/*.interaction.json'
   });
 
   cmdServer.addArgument(['-l', '--log-path'], {
     action: 'store',
-    help: 'Set the logpath (default: ./pact-dev-server.log)',
+    help: 'Logpath (default: ./pact-dev-server.log)',
     metavar: 'LOGFILE',
     defaultValue: path.resolve(process.cwd(), './server.json')
   });
 
   cmdServer.addArgument(['-d', '--contract-dir'], {
     action: 'store',
-    help: 'Set the Contracts directory (default: ./pacts)',
+    help: 'Contracts directory (default: ./pacts)',
     metavar: 'DIRECTORY',
     defaultValue: './pacts'
   });
 
-  cmdNew.addArgument(['FILENAME'], {
+  cmdNew.addArgument(['INTERACTIONNAME'], {
     action: 'store',
-    help: 'Server with File'
+    help: 'Interaction Name'
   });
 
   cmdPublish.addArgument(['PACT_FILE'], {
     action: 'store',
-    help: 'Pactfile'
+    help: 'Pact File to publish'
   });
 
   return parser.parseArgs();

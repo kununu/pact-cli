@@ -22,32 +22,34 @@ export function brokerPublishWizard(pushfile) {
 
   prompt.start();
   prompt.get(schema, function (err, res) {  
-    const opts = {
-      pactUrls: [path.resolve(process.cwd(), pushfile)],
-      pactBroker: config.brokerUrl,
-      consumerVersion: res.consumerVersion
-    }
+    if (res) {
+      const opts = {
+        pactUrls: [path.resolve(process.cwd(), pushfile)],
+        pactBroker: config.brokerUrl,
+        consumerVersion: res.consumerVersion
+      }
 
-    if (res.tags.trim() !== '') {
-      Object.assign(opts, {
-        tags: res.tags.split(','),
+      if (res.tags.trim() !== '') {
+        Object.assign(opts, {
+          tags: res.tags.split(','),
+        });
+      }
+
+      if (config.brokerUser.trim() !== '') {
+        Object.assign(opts, {
+          pactBrokerUsername: config.brokerUser,
+          pactBrokerPassword: config.brokerPassword
+        });
+      }
+
+      pact.publishPacts(opts).then((pact) => {
+        log('=================================================================================');
+        log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
+        log('=================================================================================');
+        console.log(JSON.stringify(pact, null, 2));
+        log('=================================================================================');
       });
     }
-
-    if (config.brokerUser.trim() !== '') {
-      Object.assign(opts, {
-        pactBrokerUsername: config.brokerUser,
-        pactBrokerPassword: config.brokerPassword
-      });
-    }
-
-    pact.publishPacts(opts).then((pact) => {
-      log('=================================================================================');
-      log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
-      log('=================================================================================');
-      console.log(JSON.stringify(pact, null, 2));
-      log('=================================================================================');
-    });
   });
 }
 
@@ -74,20 +76,24 @@ export function serverWizard(file) {
       },
       port: {
         message: 'Port number that the server runs on',
-        default: 8888
+        default: 8888,
+        type: 'integer'
       },
       spec: {
         message: 'The pact specification version to use when writing pact contracts',
-        default: 3
+        default: 3,
+        type: 'integer'
       }
     }
   }
 
   prompt.start();
   prompt.get(schema, function (err, res) {
-    servers.push(res);
-    writeJSON(servers, file);
-    log(`Serverfile written @${file}`);
+    if (res) {
+      servers.push(res);
+      writeJSON(servers, file);
+      log(`Serverfile written @${file}`);
+    }
   });
 }
 
@@ -107,18 +113,20 @@ export function brokerConfigWizard() {
   }
   prompt.start();
   prompt.get(schema, function (err, res) {
-    const config = {
-      brokerUrl: res.brokerUrl,
-      brokerUser: res.brokerUser,
-      brokerPassword: res.brokerPassword
-    }
+    if (res) {
+      const config = {
+        brokerUrl: res.brokerUrl,
+        brokerUser: res.brokerUser,
+        brokerPassword: res.brokerPassword
+      }
 
-    const HOME = process.env.HOME || process.env.USERPROFILE;
-    const CONFIGPATH = `${HOME}/.pact-dev-server`;
+      const HOME = process.env.HOME || process.env.USERPROFILE;
+      const CONFIGPATH = `${HOME}/.pact-dev-server`;
 
-    writeJSON(config, CONFIGPATH);
-    log(`Config written @ ${CONFIGPATH}`);
-  });
+      writeJSON(config, CONFIGPATH);
+      log(`Config written @ ${CONFIGPATH}`);
+    });
+  }
 }
 
 export function interactionWizard(name) {
@@ -162,29 +170,31 @@ export function interactionWizard(name) {
   }
   prompt.start();
   prompt.get(schema, function (err, res) {
-    const pact = {
-      consumer: res.consumer,
-      provider: res.provider,
-      interaction: {
-        state: res.state,
-        uponReceiving: res.uponReceiving,
-        withRequest: {
-          method: res.method,
-          path: res.path
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
+    if (res) {
+      const pact = {
+        consumer: res.consumer,
+        provider: res.provider,
+        interaction: {
+          state: res.state,
+          uponReceiving: res.uponReceiving,
+          withRequest: {
+            method: res.method,
+            path: res.path
           },
-          body: [
-            {"id": 1, "hello": "world"}
-          ]
+          willRespondWith: {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            },
+            body: [
+              {"id": 1, "hello": "world"}
+            ]
+          }
         }
       }
+      writeJSON(pact, path);
+      exec(`open ${path}`);
     }
-    writeJSON(pact, path);
-    exec(`open ${path}`);
   });
 }

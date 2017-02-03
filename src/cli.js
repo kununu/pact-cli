@@ -6,11 +6,8 @@ import setupServers, {getInteractionsPromise} from './setupServers';
 import {serverWizard, interactionWizard, brokerPublishWizard, brokerConfigWizard} from './wizards';
 import glob from 'glob';
 
-
 const pkg = readJSON(path.resolve(__dirname, '../package.json'));
 const args = getParsedArgs(pkg.version);
-
-console.log(args);
 
 switch(args.subcommand_name) {
   case 'server':
@@ -22,7 +19,7 @@ switch(args.subcommand_name) {
 
   } else if (args.CHOICE === 'add') {
     serverWizard(args.file);
-  } 
+  }
   break;
   
   case 'new':

@@ -6,6 +6,7 @@ import {log, readJSON} from './helpers';
 export function getInteractionsPromise(args) {
   return new Promise((resolve, reject) => {
     log(`Searching for interaction files ...`);
+    
     const interactions = [];
     glob(args.glob, {ignore: 'node_modules/'}, (err, files) => {
       if (err) {
