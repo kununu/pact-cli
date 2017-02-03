@@ -39,7 +39,8 @@ switch (args.subcommand_name) {
     break;
 
   case 'new':
-    (0, _wizards.interactionWizard)(args.FILENAME);
+    console.log(args);
+    (0, _wizards.interactionWizard)(args.INTERACTIONNAME);
     break;
 
   case 'config':
