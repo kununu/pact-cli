@@ -48,7 +48,6 @@ export function brokerPublishWizard(pushfile) {
       console.log(JSON.stringify(pact, null, 2));
       log('=================================================================================');
     });
-
   });
 }
 

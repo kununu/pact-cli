@@ -45,20 +45,17 @@ function getParsedArgs(version) {
     description: 'Pact Dev Server'
   });
 
-  parser.addArgument(['--publish'], {
-    help: 'Publish a file to a broker (Configurationfile required)',
-    metavar: 'PACT_FILE_PATH'
+  parser.addArgument(['-x', '--publish'], {
+    help: 'Publish a file to a broker (Configurationfile required)'
   });
 
   parser.addArgument(['-n', '--new'], {
-    help: 'Interaction file generator',
-    metavar: '[NAME].interaction.json'
+    help: 'Interaction file generator'
   });
 
   parser.addArgument(['-f', '--file'], {
     help: 'Start server with Serverfile (default: ./servers.json)',
-    defaultValue: './servers.json',
-    metavar: 'FILENAME'
+    defaultValue: './servers.json'
   });
 
   parser.addArgument(['-g', '--glob-pattern'], {
@@ -68,24 +65,29 @@ function getParsedArgs(version) {
 
   parser.addArgument(['-d', '--contract-dir'], {
     help: 'Set the Contracts directory (default: ./pacts)',
-    defaultValue: './pacts',
-    metavar: 'DIRNAME'
+    defaultValue: './pacts'
   });
 
   parser.addArgument(['-l', '--log-path'], {
     help: 'Set the logpath (default: ./pact-dev-server.log)',
-    defaultValue: './pact-dev-server.log',
-    metavar: 'LOGPATH'
+    defaultValue: './pact-dev-server.log'
   });
 
-  parser.addArgument(['--broker-config'], {
+  parser.addArgument(['-y', '--broker-config'], {
     help: 'Broker Config generator (saved in ~/.pact-dev-server)',
     action: 'storeConst',
     constant: 42
   });
 
+  parser.addArgument(['-k', '--start-server'], {
+    help: 'Start Server',
+    action: 'storeConst',
+    constant: 42
+  });
+
+
   var args = parser.parseArgs();
-  args.log_path = path.resolve(process.cwd(), args.log_path);
+  //args.log_path = path.resolve(process.cwd(), args.log_path);
   return args;
 }
 
