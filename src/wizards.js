@@ -1,6 +1,6 @@
 import fs from 'fs';
 import prompt from 'prompt';
-import {getConfig, writeJSON, log} from './helpers';
+import {getConfig, readJSON, writeJSON, log} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
 import {exec} from 'child_process';
@@ -43,11 +43,51 @@ export function brokerPublishWizard(pushfile) {
 
     pact.publishPacts(opts).then((pact) => {
       log('=================================================================================');
-      log(`Pact ${pushfile} Published`);
+      log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
       log('=================================================================================');
       console.log(JSON.stringify(pact, null, 2));
       log('=================================================================================');
     });
+  });
+}
+
+export function serverWizard(file) {
+  let servers;
+  
+  if (fs.existsSync(file)) {
+    log(`Serverfile found, adding following Server to your config`);
+    servers = readJSON(file);
+  } else {
+    log(`No Serverfile found, creating new @ ${file}`);
+    servers = [];
+  }
+
+   const schema = {
+    properties: {
+      consumer: {
+        message: 'The name of the consumer to be written to the pact contracts, defaults to none',
+        default: 'consumer'
+      },
+      provider: {
+        message: 'The name of the provider to be written to the pact contracts, defaults to none',
+        default: 'provider'
+      },
+      port: {
+        message: 'Port number that the server runs on',
+        default: 8888
+      },
+      spec: {
+        message: 'The pact specification version to use when writing pact contracts',
+        default: 3
+      }
+    }
+  }
+
+  prompt.start();
+  prompt.get(schema, function (err, res) {
+    servers.push(res);
+    writeJSON(servers, file);
+    log(`Serverfile written @${file}`);
   });
 }
 
@@ -93,12 +133,12 @@ export function interactionWizard(name) {
       consumer: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Consumer ID must be only letters and dashes',
-        default: 'test-frontend'
+        default: `${name}-consumer`
       },
       provider: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Provider ID must be only letters and dashes',
-        default: 'test-backend'
+        default: `${name}-provider`
       },
       state: {
         required: true,

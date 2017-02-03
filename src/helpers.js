@@ -1,5 +1,6 @@
 import {ArgumentParser} from 'argparse';
 import fs from 'fs';
+import path from 'path';
 
 export function getConfig() {
   const HOME = process.env.HOME || process.env.USERPROFILE;
@@ -21,76 +22,67 @@ export function die(msg, code=1) {
 }
 
 export function getParsedArgs(version) {
+
   var parser = new ArgumentParser({
     version: version,
     addHelp:true,
-    description: 'Pact Dev Server'
+    description: 'Argparse examples: sub-commands',
+  });
+   
+  var subparsers = parser.addSubparsers({
+    title:'subcommands',
+    dest:"subcommand_name"
   });
 
-  parser.addArgument(
-    ['-x', '--publish'],
-    {
-      help: 'Publish a file to a broker (Configurationfile required)'
-    }
-  );
+  const cmdServer = subparsers.addParser('server', {addHelp:true});
+  const cmdNew = subparsers.addParser('new', {addHelp:true});
+  const cmdConfig = subparsers.addParser('config', {addHelp:true});
+  const cmdPublish = subparsers.addParser('publish', {addHelp:true});
 
-  parser.addArgument(
-    [ '-n', '--new' ],
-    {
-      help: 'Interaction file generator',
-    }
-  );
-
-  parser.addArgument(
-    [ '-f', '--file' ],
-    {
-      help: 'Start server with Serverfile (default: ./servers.json)',
-      defaultValue: './servers.json'
-    }
-  );
-
-  parser.addArgument(
-    [ '-g', '--glob-pattern' ],
-    {
-      help: 'Set the glob pattern for pact files (default: **/*.interaction.json',
-      defaultValue: '**/*.interaction.json'
-    }
-  );
-
-  parser.addArgument(
-    [ '-d', '--contract-dir' ],
-    {
-      help: 'Set the Contracts directory (default: ./pacts)',
-      defaultValue: './pacts',
-    }
-  );
-
-  parser.addArgument(
-    [ '-l', '--log-path' ],
-    {
-      help: 'Set the logpath (default: ./pact-dev-server.log)',
-      defaultValue: './pact-dev-server.log',
-    }
-  );
-
-  parser.addArgument(
-    ['-y', '--broker-config' ],
-    {
-      help: 'Broker Congit pfig generator (saved in ~/.pact-dev-server)',
-      action: 'storeConst',
-      constant: 42
-    }
-  );
-
-  parser.addArgument(['-k', '--start-server'], {
-    help: 'Start Server',
-    action: 'storeConst',
-    constant: 42
+  cmdServer.addArgument(['CHOICE'], {
+    action: 'store',
+    help: 'Server with File',
+    choices: ['start', 'add']
   });
-  
-  const args = parser.parseArgs();
-  //args.log_path = path.resolve(process.cwd(), args.log_path);
-  return args;
+
+  cmdServer.addArgument(['-f', '--file'], {
+    action: 'store',
+    help: 'Server with File',
+    metavar: 'SERVERFILE',
+    defaultValue: './servers.json'
+  });
+
+  cmdServer.addArgument(['-g', '--glob'], {
+    action: 'store',
+    help: 'Set the glob pattern for pact files (default: **/*.interaction.json',
+    defaultValue: '**/*.interaction.json'
+  });
+
+  cmdServer.addArgument(['-l', '--log-path'], {
+    action: 'store',
+    help: 'Set the logpath (default: ./pact-dev-server.log)',
+    metavar: 'LOGFILE',
+    defaultValue: path.resolve(process.cwd(), './server.json')
+  });
+
+  cmdServer.addArgument(['-d', '--contract-dir'], {
+    action: 'store',
+    help: 'Set the Contracts directory (default: ./pacts)',
+    metavar: 'DIRECTORY',
+    defaultValue: './pacts'
+  });
+
+  cmdNew.addArgument(['FILENAME'], {
+    action: 'store',
+    help: 'Server with File'
+  });
+
+  cmdPublish.addArgument(['PACT_FILE'], {
+    action: 'store',
+    help: 'Pactfile'
+  });
+
+  return parser.parseArgs();
 }
 
 export function writeJSON(obj, path) {

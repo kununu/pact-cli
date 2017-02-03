@@ -7,7 +7,7 @@ export function getInteractionsPromise(args) {
   return new Promise((resolve, reject) => {
     log(`Searching for interaction files ...`);
     const interactions = [];
-    glob(args.glob_pattern, {ignore: 'node_modules/'}, (err, files) => {
+    glob(args.glob, {ignore: 'node_modules/'}, (err, files) => {
       if (err) {
         reject(err);
       }
