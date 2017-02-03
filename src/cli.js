@@ -23,7 +23,6 @@ switch(args.subcommand_name) {
   break;
   
   case 'new':
-  console.log(args);
     interactionWizard(args.INTERACTIONNAME);
   break;
 
