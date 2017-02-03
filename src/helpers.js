@@ -76,14 +76,20 @@ export function getParsedArgs(version) {
   parser.addArgument(
     ['-y', '--broker-config' ],
     {
-      help: 'Broker Config generator (saved in ~/.pact-dev-server)',
+      help: 'Broker Congit pfig generator (saved in ~/.pact-dev-server)',
       action: 'storeConst',
       constant: 42
     }
   );
 
+  parser.addArgument(['-k', '--start-server'], {
+    help: 'Start Server',
+    action: 'storeConst',
+    constant: 42
+  });
+  
   const args = parser.parseArgs();
-  args.log_path = path.resolve(process.cwd(), args.log_path);
+  //args.log_path = path.resolve(process.cwd(), args.log_path);
   return args;
 }
 
