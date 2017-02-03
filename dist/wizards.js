@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.brokerPublishWizard = brokerPublishWizard;
+exports.serverWizard = serverWizard;
 exports.brokerConfigWizard = brokerConfigWizard;
 exports.interactionWizard = interactionWizard;
 
@@ -39,39 +40,85 @@ function brokerPublishWizard(pushfile) {
         required: true
       },
       tags: {
-        message: 'Comma seperated List of strings'
+        message: 'Comma seperated List of tags'
       }
     }
   };
 
   _prompt2.default.start();
   _prompt2.default.get(schema, function (err, res) {
-    var opts = {
-      pactUrls: [_path2.default.resolve(process.cwd(), pushfile)],
-      pactBroker: config.brokerUrl,
-      consumerVersion: res.consumerVersion
-    };
+    if (res) {
+      var opts = {
+        pactUrls: [_path2.default.resolve(process.cwd(), pushfile)],
+        pactBroker: config.brokerUrl,
+        consumerVersion: res.consumerVersion
+      };
 
-    if (res.tags.trim() !== '') {
-      Object.assign(opts, {
-        tags: res.tags.split(',')
+      if (res.tags.trim() !== '') {
+        Object.assign(opts, {
+          tags: res.tags.split(',')
+        });
+      }
+
+      if (config.brokerUser.trim() !== '') {
+        Object.assign(opts, {
+          pactBrokerUsername: config.brokerUser,
+          pactBrokerPassword: config.brokerPassword
+        });
+      }
+
+      _pactNode2.default.publishPacts(opts).then(function (pact) {
+        (0, _helpers.log)('=================================================================================');
+        (0, _helpers.log)('Pact ' + pushfile + ' Published on ' + config.brokerUrl);
+        (0, _helpers.log)('=================================================================================');
+        console.log(JSON.stringify(pact, null, 2));
+        (0, _helpers.log)('=================================================================================');
       });
     }
+  });
+}
 
-    if (config.brokerUser.trim() !== '') {
-      Object.assign(opts, {
-        pactBrokerUsername: config.brokerUser,
-        pactBrokerPassword: config.brokerPassword
-      });
+function serverWizard(file) {
+  var servers = void 0;
+
+  if (_fs2.default.existsSync(file)) {
+    (0, _helpers.log)('Serverfile found, adding following Server to your config');
+    servers = (0, _helpers.readJSON)(file);
+  } else {
+    (0, _helpers.log)('No Serverfile found, creating new @ ' + file);
+    servers = [];
+  }
+
+  var schema = {
+    properties: {
+      consumer: {
+        message: 'The name of the consumer to be written to the pact contracts, defaults to none',
+        default: 'consumer'
+      },
+      provider: {
+        message: 'The name of the provider to be written to the pact contracts, defaults to none',
+        default: 'provider'
+      },
+      port: {
+        message: 'Port number that the server runs on',
+        default: 8888,
+        type: 'integer'
+      },
+      spec: {
+        message: 'The pact specification version to use when writing pact contracts',
+        default: 3,
+        type: 'integer'
+      }
     }
+  };
 
-    _pactNode2.default.publishPacts(opts).then(function (pact) {
-      (0, _helpers.log)('=================================================================================');
-      (0, _helpers.log)('Pact ' + pushfile + ' Published');
-      (0, _helpers.log)('=================================================================================');
-      console.log(JSON.stringify(pact, null, 2));
-      (0, _helpers.log)('=================================================================================');
-    });
+  _prompt2.default.start();
+  _prompt2.default.get(schema, function (err, res) {
+    if (res) {
+      servers.push(res);
+      (0, _helpers.writeJSON)(servers, file);
+      (0, _helpers.log)('Serverfile written @' + file);
+    }
   });
 }
 
@@ -91,17 +138,19 @@ function brokerConfigWizard() {
   };
   _prompt2.default.start();
   _prompt2.default.get(schema, function (err, res) {
-    var config = {
-      brokerUrl: res.brokerUrl,
-      brokerUser: res.brokerUser,
-      brokerPassword: res.brokerPassword
-    };
+    if (res) {
+      var config = {
+        brokerUrl: res.brokerUrl,
+        brokerUser: res.brokerUser,
+        brokerPassword: res.brokerPassword
+      };
 
-    var HOME = process.env.HOME || process.env.USERPROFILE;
-    var CONFIGPATH = HOME + '/.pact-dev-server';
+      var HOME = process.env.HOME || process.env.USERPROFILE;
+      var CONFIGPATH = HOME + '/.pact-dev-server';
 
-    (0, _helpers.writeJSON)(config, CONFIGPATH);
-    (0, _helpers.log)('Config written @ ' + CONFIGPATH);
+      (0, _helpers.writeJSON)(config, CONFIGPATH);
+      (0, _helpers.log)('Config written @ ' + CONFIGPATH);
+    }
   });
 }
 
@@ -116,12 +165,12 @@ function interactionWizard(name) {
       consumer: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Consumer ID must be only letters and dashes',
-        default: 'test-frontend'
+        default: name + '-consumer'
       },
       provider: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Provider ID must be only letters and dashes',
-        default: 'test-backend'
+        default: name + '-provider'
       },
       state: {
         required: true,
@@ -145,27 +194,29 @@ function interactionWizard(name) {
   };
   _prompt2.default.start();
   _prompt2.default.get(schema, function (err, res) {
-    var pact = {
-      consumer: res.consumer,
-      provider: res.provider,
-      interaction: {
-        state: res.state,
-        uponReceiving: res.uponReceiving,
-        withRequest: {
-          method: res.method,
-          path: res.path
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
+    if (res) {
+      var _pact = {
+        consumer: res.consumer,
+        provider: res.provider,
+        interaction: {
+          state: res.state,
+          uponReceiving: res.uponReceiving,
+          withRequest: {
+            method: res.method,
+            path: res.path
           },
-          body: [{ "id": 1, "hello": "world" }]
+          willRespondWith: {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            },
+            body: [{ "id": 1, "hello": "world" }]
+          }
         }
-      }
-    };
-    (0, _helpers.writeJSON)(pact, path);
-    (0, _child_process.exec)('open ' + path);
+      };
+      (0, _helpers.writeJSON)(_pact, path);
+      (0, _child_process.exec)('open ' + path);
+    }
   });
 }

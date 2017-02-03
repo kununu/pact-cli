@@ -5,7 +5,7 @@ import path from 'path';
 
 var parser = new ArgumentParser({
   version: '0.0.1',
-  addHelp:true,
+  addHelp: true,
   description: 'Argparse examples: sub-commands',
 });
  

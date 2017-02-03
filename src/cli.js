@@ -11,15 +11,15 @@ const args = getParsedArgs(pkg.version);
 
 switch(args.subcommand_name) {
   case 'server':
-  if (args.CHOICE === 'start') {
-    const servers = readJSON(args.file);
-      getInteractionsPromise(args).then((interactions) => {
-      setupServers(args, servers, interactions);
-    }, (err) =>  { console.log(err) }); 
+    if (args.CHOICE === 'start') {
+      const servers = readJSON(args.file);
+        getInteractionsPromise(args).then((interactions) => {
+        setupServers(args, servers, interactions);
+      }, (err) =>  { console.log(err) }); 
 
-  } else if (args.CHOICE === 'add') {
-    serverWizard(args.file);
-  }
+    } else if (args.CHOICE === 'add') {
+      serverWizard(args.file);
+    }
   break;
   
   case 'new':

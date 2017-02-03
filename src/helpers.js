@@ -21,12 +21,12 @@ export function die(msg, code=1) {
   process.exit(code);
 }
 
-export function getParsedArgs(version) {
+export function getParsedArgs(pkgContents) {
 
   var parser = new ArgumentParser({
-    version: version,
+    version: pkgContents.version,
     addHelp:true,
-    description: 'CLI Tool to start an API Mock Server via PACT interaction Files and communicating with PACT Brokers',
+    description: pkgContents.description,
   });
    
   var subparsers = parser.addSubparsers({

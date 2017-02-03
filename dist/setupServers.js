@@ -25,8 +25,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function getInteractionsPromise(args) {
   return new Promise(function (resolve, reject) {
     (0, _helpers.log)('Searching for interaction files ...');
+
     var interactions = [];
-    (0, _glob2.default)(args.glob_pattern, { ignore: 'node_modules/' }, function (err, files) {
+    (0, _glob2.default)(args.glob, { ignore: 'node_modules/' }, function (err, files) {
       if (err) {
         reject(err);
       }
@@ -42,6 +43,7 @@ function getInteractionsPromise(args) {
 
 function setupServers(args, servers, interactions) {
   (0, _helpers.log)('Startup Servers ...');
+
   servers.forEach(function (specs) {
     var filteredInteractions = interactions.filter(function (interaction) {
       return specs.consumer == interaction.consumer && specs.provider == interaction.provider;
@@ -59,6 +61,7 @@ function setupServers(args, servers, interactions) {
 
       mockserver.start().then(function () {
         (0, _helpers.log)('Server for ' + specs.provider + ' -> ' + specs.consumer + ' started on port:' + specs.port);
+
         filteredInteractions.forEach(function (interaction) {
           var pactProvider = (0, _pact2.default)({
             consumer: interaction.consumer,

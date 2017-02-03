@@ -15,7 +15,7 @@ export function brokerPublishWizard(pushfile) {
         required: true
       },
       tags: {
-        message: 'Comma seperated List of strings'
+        message: 'Comma seperated List of tags'
       }
     }
   }
@@ -125,8 +125,8 @@ export function brokerConfigWizard() {
 
       writeJSON(config, CONFIGPATH);
       log(`Config written @ ${CONFIGPATH}`);
-    });
-  }
+    }
+  });
 }
 
 export function interactionWizard(name) {
