@@ -28,7 +28,9 @@ A CLI Tool to start a API mock server via pact interaction files.
 
 ### new
 ```pact-dev-server new INTERACTION_NAME ```
-- Starts an step-by-step generator for generating an interactionfile
+ - optional arguments: 
+    - `-f | --file ./path-to-serverfile`
+ - Starts an step-by-step generator for creating an interactionfile, a Serverfile *is required*
 
 ### config
 ```pact-dev-server config```
