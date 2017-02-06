@@ -162,7 +162,7 @@ export function interactionWizard(name) {
         default: 'GET'
       },
       path: {
-        pattern: /^[a-zA-Z0-9\-\/]+$/,
+        pattern: /^[a-zA-Z0-9\-\/:]+$/,
         required: true,
         default: '/'
       }
