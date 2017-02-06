@@ -20,6 +20,10 @@ var _glob2 = _interopRequireDefault(_glob);
 
 var _helpers = require('./helpers');
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function getInteractionsPromise(args) {
@@ -27,15 +31,23 @@ function getInteractionsPromise(args) {
     (0, _helpers.log)('Searching for interaction files ...');
 
     var interactions = [];
-    (0, _glob2.default)(args.glob, { ignore: 'node_modules/' }, function (err, files) {
+    (0, _glob2.default)('**/*.interaction.+(json|js)', { ignore: 'node_modules/' }, function (err, files) {
       if (err) {
         reject(err);
       }
 
       files.forEach(function (file) {
-        interactions.push((0, _helpers.readJSON)(file));
-      });
+        switch (_path2.default.extname(file)) {
 
+          case '.js':
+            interactions.push(require(process.cwd() + '/' + file));
+            break;
+
+          case '.json':
+            interactions.push((0, _helpers.readJSON)(file));
+            break;
+        }
+      });
       resolve(interactions);
     });
   });

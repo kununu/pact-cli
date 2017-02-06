@@ -75,8 +75,8 @@ function getParsedArgs(pkgContents) {
 
   cmdServer.addArgument(['-g', '--glob'], {
     action: 'store',
-    help: 'Search glob for interaction files (default: **/*.interaction.json',
-    defaultValue: '**/*.interaction.json'
+    help: 'Search glob for interaction files',
+    defaultValue: '**/*.interaction.+(json|js)'
   });
 
   cmdServer.addArgument(['-l', '--log-path'], {

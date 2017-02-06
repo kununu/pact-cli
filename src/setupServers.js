@@ -2,21 +2,34 @@ import Pact from 'pact';
 import wrapper from '@pact-foundation/pact-node';
 import glob from 'glob';
 import {log, readJSON} from './helpers';
+import path from 'path';
 
 export function getInteractionsPromise(args) {
   return new Promise((resolve, reject) => {
     log(`Searching for interaction files ...`);
 
     const interactions = [];
-    glob(args.glob, {ignore: 'node_modules/'}, (err, files) => {
+    glob('**/*.interaction.+(json|js)', {ignore: 'node_modules/'}, (err, files) => {
       if (err) {
         reject(err);
       }
 
       files.forEach(file => {
-        interactions.push(readJSON(file));
-      });
+        switch(path.extname(file)) {
 
+          case '.js':
+            interactions.push(
+              require(`${process.cwd()}/${file}`)
+            );
+          break;
+
+          case '.json':
+            interactions.push(
+              readJSON(file)
+            );
+          break;
+        }
+      });
       resolve(interactions);
     });
   });
