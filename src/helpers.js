@@ -62,7 +62,7 @@ export function getParsedArgs(pkgContents) {
     action: 'store',
     help: 'Logpath (default: ./pact-dev-server.log)',
     metavar: 'LOGFILE',
-    defaultValue: path.resolve(process.cwd(), './server.json')
+    defaultValue: path.resolve(process.cwd(), './pact-dev-server.log')
   });
 
   cmdServer.addArgument(['-d', '--contract-dir'], {
