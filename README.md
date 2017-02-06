@@ -23,7 +23,6 @@ A CLI Tool to start a API mock server via pact interaction files.
 - `server start` searches your directory for *.interaction.json files and starts an PACT Mock API Server
   - optional arguments: 
     - `-f | --file ./path-to-serverfile`
-    - `-g | --glob **/*.interaction.json` (glob pattern for searching files)
     - `-l | --log-path ./pact-dev-server.log` (path to logfile)
     - `-d | --contract-dir ./pacts` (path for server-written pacts)
 

@@ -4,7 +4,6 @@ import path from 'path';
 import {die, getParsedArgs, readJSON} from './helpers';
 import setupServers, {getInteractionsPromise} from './setupServers';
 import {serverWizard, interactionWizard, brokerPublishWizard, brokerConfigWizard} from './wizards';
-import glob from 'glob';
 
 const pkg = readJSON(path.resolve(__dirname, '../package.json'));
 const args = getParsedArgs(pkg.version);
@@ -23,7 +22,7 @@ switch(args.subcommand_name) {
   break;
   
   case 'new':
-    interactionWizard(args.INTERACTIONNAME);
+    interactionWizard(args);
   break;
 
   case 'config':

@@ -13,10 +13,6 @@ var _setupServers2 = _interopRequireDefault(_setupServers);
 
 var _wizards = require('./wizards');
 
-var _glob = require('glob');
-
-var _glob2 = _interopRequireDefault(_glob);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var pkg = (0, _helpers.readJSON)(_path2.default.resolve(__dirname, '../package.json'));
@@ -39,7 +35,7 @@ switch (args.subcommand_name) {
     break;
 
   case 'new':
-    (0, _wizards.interactionWizard)(args.INTERACTIONNAME);
+    (0, _wizards.interactionWizard)(args);
     break;
 
   case 'config':

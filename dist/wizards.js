@@ -28,6 +28,8 @@ var _path2 = _interopRequireDefault(_path);
 
 var _child_process = require('child_process');
 
+var _templates = require('./templates');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function brokerPublishWizard(pushfile) {
@@ -154,31 +156,41 @@ function brokerConfigWizard() {
   });
 }
 
-function interactionWizard(name) {
-  var path = name + '.interaction.json';
-  if (_fs2.default.exists(path)) die('File ' + path + ' already exists');
+function interactionWizard(args) {
 
-  (0, _helpers.log)('New Interaction File: ' + path + '\n');
+  if (!_fs2.default.existsSync(args.file)) (0, _helpers.die)('Please create a Serverfile first');
 
+  var servers = (0, _helpers.readJSON)(args.file);
+  var suggestions = servers[0];
+  var interactionPath = args.INTERACTIONNAME + '.interaction';
   var schema = {
     properties: {
+      interactionType: {
+        description: 'Interaction Type (json|js)',
+        pattern: /(json|js)/,
+        message: 'Not a valid option or this file already exists',
+        default: 'json',
+        conform: function conform(ext) {
+          return !_fs2.default.existsSync(interactionPath + '.' + ext);
+        }
+      },
       consumer: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Consumer ID must be only letters and dashes',
-        default: name + '-consumer'
+        default: '' + suggestions.consumer
       },
       provider: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Provider ID must be only letters and dashes',
-        default: name + '-provider'
+        default: '' + suggestions.provider
       },
       state: {
-        required: true,
-        default: ''
+        message: 'Given State',
+        required: true
       },
       uponReceiving: {
-        required: true,
-        default: ''
+        message: 'Given When',
+        required: true
       },
       method: {
         pattern: /^[A-Z]+$/,
@@ -186,7 +198,7 @@ function interactionWizard(name) {
         default: 'GET'
       },
       path: {
-        pattern: /^[a-zA-Z0-9\-\/]+$/,
+        pattern: /^[a-zA-Z0-9\-\/:]+$/,
         required: true,
         default: '/'
       }
@@ -195,28 +207,18 @@ function interactionWizard(name) {
   _prompt2.default.start();
   _prompt2.default.get(schema, function (err, res) {
     if (res) {
-      var _pact = {
-        consumer: res.consumer,
-        provider: res.provider,
-        interaction: {
-          state: res.state,
-          uponReceiving: res.uponReceiving,
-          withRequest: {
-            method: res.method,
-            path: res.path
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*"
-            },
-            body: [{ "id": 1, "hello": "world" }]
-          }
+      if (res.interactionType === 'json') {
+        var _pact = (0, _templates.makeInteraction)(res, 'json');
+        (0, _helpers.writeJSON)(_pact, interactionPath + '.json');
+      } else {
+        var _pact2 = (0, _templates.makeInteraction)(res, 'js');
+        try {
+          _fs2.default.writeFileSync(interactionPath + '.js', _pact2, 'utf8');
+        } catch (e) {
+          (0, _helpers.die)('Error occured while saving: ' + interactionPath + '.js \n' + e);
         }
-      };
-      (0, _helpers.writeJSON)(_pact, path);
-      (0, _child_process.exec)('open ' + path);
+      }
     }
+    (0, _child_process.exec)('open ' + interactionPath + '.' + res.interactionType);
   });
 }

@@ -23,6 +23,8 @@ export function die(msg, code=1) {
 
 export function getParsedArgs(pkgContents) {
 
+  const DEFAULT_SERVERFILE = './servers.json';
+
   var parser = new ArgumentParser({
     version: pkgContents.version,
     addHelp:true,
@@ -49,13 +51,7 @@ export function getParsedArgs(pkgContents) {
     action: 'store',
     help: 'Path to your Serverfile',
     metavar: 'SERVERFILE',
-    defaultValue: './servers.json'
-  });
-
-  cmdServer.addArgument(['-g', '--glob'], {
-    action: 'store',
-    help: 'Search glob for interaction files',
-    defaultValue: '**/*.interaction.+(json|js)'
+    defaultValue: DEFAULT_SERVERFILE
   });
 
   cmdServer.addArgument(['-l', '--log-path'], {
@@ -67,14 +63,21 @@ export function getParsedArgs(pkgContents) {
 
   cmdServer.addArgument(['-d', '--contract-dir'], {
     action: 'store',
-    help: 'Contracts directory (default: ./pacts)',
+    help: 'Contracts directory (default: ./tmp/pacts)',
     metavar: 'DIRECTORY',
-    defaultValue: './pacts'
+    defaultValue: './tmp/pacts'
   });
 
   cmdNew.addArgument(['INTERACTIONNAME'], {
     action: 'store',
     help: 'Interaction Name'
+  });
+
+  cmdNew.addArgument(['-f', '--file'], {
+    action: 'store',
+    help: 'Path to your Serverfile',
+    metavar: 'SERVERFILE',
+    defaultValue: DEFAULT_SERVERFILE
   });
 
   cmdPublish.addArgument(['PACT_FILE'], {

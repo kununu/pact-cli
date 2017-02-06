@@ -1,9 +1,10 @@
 import fs from 'fs';
 import prompt from 'prompt';
-import {getConfig, readJSON, writeJSON, log} from './helpers';
+import {die, getConfig, readJSON, writeJSON, log} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
 import {exec} from 'child_process';
+import {makeInteraction} from './templates';
 
 export function brokerPublishWizard(pushfile) {
   const config = getConfig();
@@ -129,32 +130,42 @@ export function brokerConfigWizard() {
   });
 }
 
-export function interactionWizard(name) {
-  const path = `${name}.interaction.json`;
-  if (fs.exists(path))
-    die(`File ${path} already exists`);
-  
-  log(`New Interaction File: ${path}\n`);
+export function interactionWizard(args) {
 
+  if (!fs.existsSync(args.file))
+    die(`Please create a Serverfile first`);
+
+  const servers = readJSON(args.file);
+  const suggestions = servers[0];
+  const interactionPath = `${args.INTERACTIONNAME}.interaction`;
   const schema = {
     properties: {
+      interactionType: {
+        description: 'Interaction Type (json|js)',
+        pattern: /(json|js)/,
+        message: 'Not a valid option or this file already exists',
+        default: 'json',
+        conform: function(ext) {
+            return !fs.existsSync(`${interactionPath}.${ext}`)
+        } 
+      },
       consumer: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Consumer ID must be only letters and dashes',
-        default: `${name}-consumer`
+        default: `${suggestions.consumer}`
       },
       provider: {
         pattern: /^[a-zA-Z\-]+$/,
         message: 'Provider ID must be only letters and dashes',
-        default: `${name}-provider`
+        default: `${suggestions.provider}`
       },
       state: {
+        message: 'Given State',
         required: true,
-        default: ''
       },
       uponReceiving: {
+        message: 'Given When',
         required: true,
-        default: ''
       },
       method: {
         pattern: /^[A-Z]+$/,
@@ -162,7 +173,7 @@ export function interactionWizard(name) {
         default: 'GET'
       },
       path: {
-        pattern: /^[a-zA-Z0-9\-\/]+$/,
+        pattern: /^[a-zA-Z0-9\-\/:]+$/,
         required: true,
         default: '/'
       }
@@ -171,30 +182,18 @@ export function interactionWizard(name) {
   prompt.start();
   prompt.get(schema, function (err, res) {
     if (res) {
-      const pact = {
-        consumer: res.consumer,
-        provider: res.provider,
-        interaction: {
-          state: res.state,
-          uponReceiving: res.uponReceiving,
-          withRequest: {
-            method: res.method,
-            path: res.path
-          },
-          willRespondWith: {
-            status: 200,
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*"
-            },
-            body: [
-              {"id": 1, "hello": "world"}
-            ]
-          }
+      if (res.interactionType === 'json') {
+        const pact = makeInteraction(res, 'json');
+        writeJSON(pact, `${interactionPath}.json`);
+      } else {
+        const pact = makeInteraction(res, 'js');
+        try {
+          fs.writeFileSync(`${interactionPath}.js`, pact, 'utf8');
+        } catch(e) {
+          die(`Error occured while saving: ${interactionPath}.js \n${e}`);
         }
       }
-      writeJSON(pact, path);
-      exec(`open ${path}`);
     }
+    exec(`open ${interactionPath}.${res.interactionType}`);
   });
 }
