@@ -24,9 +24,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function getConfig() {
   var HOME = process.env.HOME || process.env.USERPROFILE;
-  var CONFIGFILE = HOME + '/.pact-dev-server';
+  var CONFIGFILE = HOME + '/.pact-cli';
 
-  if (!_fs2.default.existsSync(CONFIGFILE)) die('You have no broker-configfile yet \ngenerate one with \'pact-dev-server --broker-config\'');
+  if (!_fs2.default.existsSync(CONFIGFILE)) die('You have no Configfile yet (pact-cli config)');
 
   return readJSON(CONFIGFILE);
 }
@@ -77,9 +77,9 @@ function getParsedArgs(pkgContents) {
 
   cmdServer.addArgument(['-l', '--log-path'], {
     action: 'store',
-    help: 'Logpath (default: ./pact-dev-server.log)',
+    help: 'Logpath (default: ./pact-cli-server.log)',
     metavar: 'LOGFILE',
-    defaultValue: _path2.default.resolve(process.cwd(), './pact-dev-server.log')
+    defaultValue: _path2.default.resolve(process.cwd(), './pact-cli-server.log')
   });
 
   cmdServer.addArgument(['-d', '--contract-dir'], {

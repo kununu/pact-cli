@@ -148,7 +148,7 @@ function brokerConfigWizard() {
       };
 
       var HOME = process.env.HOME || process.env.USERPROFILE;
-      var CONFIGPATH = HOME + '/.pact-dev-server';
+      var CONFIGPATH = HOME + '/.pact-cli';
 
       (0, _helpers.writeJSON)(config, CONFIGPATH);
       (0, _helpers.log)('Config written @ ' + CONFIGPATH);
@@ -158,7 +158,7 @@ function brokerConfigWizard() {
 
 function interactionWizard(args) {
 
-  if (!_fs2.default.existsSync(args.file)) (0, _helpers.die)('Please create a Serverfile first');
+  if (!_fs2.default.existsSync(args.file)) (0, _helpers.die)('Please create a Serverfile first (pact-cli server add)');
 
   var servers = (0, _helpers.readJSON)(args.file);
   var suggestions = servers[0];
