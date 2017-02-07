@@ -1,4 +1,4 @@
-# pact-dev-server
+# pact-cli
 
 A CLI Tool to start a API mock server via pact interaction files.  
 
@@ -14,7 +14,7 @@ A CLI Tool to start a API mock server via pact interaction files.
 ## Sub-Commands
 
 ### server
-```pact-dev-server server (start|add)```
+```pact-cli server (start|add)```
 
 - `server add` starts an interactive serverwizard which creates a new serverfile or adds additional servers to it.
   - optional arguments: 
@@ -23,22 +23,22 @@ A CLI Tool to start a API mock server via pact interaction files.
 - `server start` searches your directory for *.interaction.json files and starts an PACT Mock API Server
   - optional arguments: 
     - `-f | --file ./path-to-serverfile`
-    - `-l | --log-path ./pact-dev-server.log` (path to logfile)
+    - `-l | --log-path ./pact-cli.log` (path to logfile)
     - `-d | --contract-dir ./pacts` (path for server-written pacts)
 
 ### new
-```pact-dev-server new INTERACTION_NAME ```
+```pact-cli new INTERACTION_NAME ```
  - optional arguments: 
     - `-f | --file ./path-to-serverfile`
  - Starts an step-by-step generator for creating an interactionfile, a Serverfile *is required*
 
 ### config
-```pact-dev-server config```
+```pact-cli config```
 - Starts an step-by-step config generator (brokerserver url + auth)
-- Configfile will be stored in your `$HOME` directory (~/.pact-dev-server)
+- Configfile will be stored in your `$HOME` directory (~/.pact-cli)
 
 ### publish
-```pact-dev-server publish PACT_FILE```
+```pact-cli publish PACT_FILE```
 - Starts an step-to-step publish generator and publishes a server generated PACT File to a Broker (configurationfile needed)
 
 ## TODO

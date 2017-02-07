@@ -1,10 +1,10 @@
 {
-  "name": "pact-dev-server",
+  "name": "pact-cli",
   "version": "1.0.0",
   "description": "CLI Tool to start an API Mock Server via PACT interaction Files and communicating with PACT Brokers",
   "main": "dist/index.js",
   "bin": {
-    "pact-dev-server": "dist/cli.js"
+    "pact-cli": "dist/cli.js"
   },
   "scripts": {
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
@@ -12,26 +12,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kununu/pact-dev-server.git"
+    "url": "git+https://github.com/kununu/pact-cli.git"
   },
   "author": "kununu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kununu/pact-dev-server/issues"
+    "url": "https://github.com/kununu/pact-cli/issues"
   },
-  "homepage": "https://github.com/kununu/pact-dev-server#readme",
+  "homepage": "https://github.com/kununu/pact-cli-cli#readme",
   "devDependencies": {
-    "babel-cli": "^6.22.2",
+    "babel-cli": "6.22.2",
     "babel-core": "6.21.0",
     "babel-preset-es2015": "6.18.0",
     "babel-preset-react": "6.16.0",
     "babel-preset-stage-0": "6.16.0",
-    "watch-cli": "^0.2.1"
+    "watch-cli": "0.2.1"
   },
   "dependencies": {
-    "@pact-foundation/pact-node": "^4.6.0",
-    "argparse": "^1.0.9",
-    "pact": "^1.0.0-rc.5",
-    "prompt": "^1.0.0"
+    "@pact-foundation/pact-node": "4.6.0",
+    "argparse": "1.0.9",
+    "pact": "1.0.0-rc.5",
+    "prompt": "1.0.0"
   }
 }

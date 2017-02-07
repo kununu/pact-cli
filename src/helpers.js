@@ -4,10 +4,10 @@ import path from 'path';
 
 export function getConfig() {
   const HOME = process.env.HOME || process.env.USERPROFILE;
-  const CONFIGFILE = `${HOME}/.pact-dev-server`;
+  const CONFIGFILE = `${HOME}/.pact-cli`;
   
   if (!fs.existsSync(CONFIGFILE))
-    die(`You have no broker-configfile yet \ngenerate one with 'pact-dev-server --broker-config'`)
+    die(`You have no Configfile yet (pact-cli config)`)
 
   return readJSON(CONFIGFILE);
 }
@@ -56,9 +56,9 @@ export function getParsedArgs(pkgContents) {
 
   cmdServer.addArgument(['-l', '--log-path'], {
     action: 'store',
-    help: 'Logpath (default: ./pact-dev-server.log)',
+    help: 'Logpath (default: ./pact-cli-server.log)',
     metavar: 'LOGFILE',
-    defaultValue: path.resolve(process.cwd(), './pact-dev-server.log')
+    defaultValue: path.resolve(process.cwd(), './pact-cli-server.log')
   });
 
   cmdServer.addArgument(['-d', '--contract-dir'], {

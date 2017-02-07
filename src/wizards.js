@@ -122,7 +122,7 @@ export function brokerConfigWizard() {
       }
 
       const HOME = process.env.HOME || process.env.USERPROFILE;
-      const CONFIGPATH = `${HOME}/.pact-dev-server`;
+      const CONFIGPATH = `${HOME}/.pact-cli`;
 
       writeJSON(config, CONFIGPATH);
       log(`Config written @ ${CONFIGPATH}`);
@@ -133,7 +133,7 @@ export function brokerConfigWizard() {
 export function interactionWizard(args) {
 
   if (!fs.existsSync(args.file))
-    die(`Please create a Serverfile first`);
+    die(`Please create a Serverfile first (pact-cli server add)`);
 
   const servers = readJSON(args.file);
   const suggestions = servers[0];
