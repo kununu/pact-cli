@@ -1,8 +1,8 @@
 export function makeInteraction(data, interactionType) {
   switch (interactionType) {
     case 'js':
-    return `var p = require('pact').Matchers;
-  module.exports = {
+    return `module.exports = (Pact) => {
+  return {
     consumer: '${data.consumer}',
     provider: '${data.provider}',
     interaction: {
@@ -18,16 +18,17 @@ export function makeInteraction(data, interactionType) {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
-      body: {
-        items: p.eachLike({
-          size: p.somethingLike(10),
-          colour: p.term({matcher: "red|green|blue", generate: "blue"}),
-          tag: p.eachLike(p.somethingLike("jumper"))
-        }, {min: 10})
+        body: {
+          items: Pact.eachLike({
+            size: Pact.somethingLike(10),
+            colour: Pact.term({matcher: "red|green|blue", generate: "blue"}),
+            tag: Pact.eachLike(Pact.somethingLike("jumper"))
+          }, {min: 10})
+        }
       }
     }
   }
-};`
+}`;
     case 'json':
     return {
       consumer: data.consumer,

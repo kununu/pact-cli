@@ -19,7 +19,7 @@ export function getInteractionsPromise(args) {
 
           case '.js':
             interactions.push(
-              require(`${process.cwd()}/${file}`)
+              require(`${process.cwd()}/${file}`)(Pact.Matchers)
             );
           break;
 

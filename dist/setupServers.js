@@ -40,7 +40,7 @@ function getInteractionsPromise(args) {
         switch (_path2.default.extname(file)) {
 
           case '.js':
-            interactions.push(require(process.cwd() + '/' + file));
+            interactions.push(require(process.cwd() + '/' + file)(_pact2.default.Matchers));
             break;
 
           case '.json':
