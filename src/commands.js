@@ -22,9 +22,9 @@ export function verify(args) {
     });
   }
 
-  pact.verifyPacts(opts).then((res) => {
-    console.log(res);
-  });
+  pact.verifyPacts(opts).then(() => {
+    log(res);
+  },(err) => log(`Verify failed because of \n${err}`));
 }
 
 export function publish(args) {
@@ -53,7 +53,7 @@ export function publish(args) {
     log('=================================================================================');
     log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
     log('=================================================================================');
-    console.log(JSON.stringify(pact, null, 2));
+    log(JSON.stringify(pact, null, 2));
     log('=================================================================================');
-  });
+  }, (err) => log(`Publish failed because of \n${err}`));
 }
