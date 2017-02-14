@@ -80,6 +80,17 @@ export function getParsedArgs(pkgContents) {
     defaultValue: DEFAULT_SERVERFILE
   });
 
+  cmdPublish.addArgument(['-v', '--version'], {
+    action: 'store',
+    help: 'Version Number (required)',
+    required: true
+  });
+
+  cmdPublish.addArgument(['-t', '--tags'], {
+    action: 'store',
+    help: 'Comma seperated Taglist'
+  });
+
   cmdPublish.addArgument(['PACT_FILE'], {
     action: 'store',
     help: 'Pact File to publish'

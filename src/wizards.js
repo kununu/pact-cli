@@ -6,54 +6,6 @@ import path from 'path';
 import {exec} from 'child_process';
 import {makeInteraction} from './templates';
 
-export function brokerPublishWizard(pushfile) {
-  const config = getConfig();
-
-  const schema = {
-    properties: {
-      consumerVersion: {
-        message: 'A string containing a semver-style version',
-        required: true
-      },
-      tags: {
-        message: 'Comma seperated List of tags'
-      }
-    }
-  }
-
-  prompt.start();
-  prompt.get(schema, function (err, res) {  
-    if (res) {
-      const opts = {
-        pactUrls: [path.resolve(process.cwd(), pushfile)],
-        pactBroker: config.brokerUrl,
-        consumerVersion: res.consumerVersion
-      }
-
-      if (res.tags.trim() !== '') {
-        Object.assign(opts, {
-          tags: res.tags.split(','),
-        });
-      }
-
-      if (config.brokerUser.trim() !== '') {
-        Object.assign(opts, {
-          pactBrokerUsername: config.brokerUser,
-          pactBrokerPassword: config.brokerPassword
-        });
-      }
-
-      pact.publishPacts(opts).then((pact) => {
-        log('=================================================================================');
-        log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
-        log('=================================================================================');
-        console.log(JSON.stringify(pact, null, 2));
-        log('=================================================================================');
-      });
-    }
-  });
-}
-
 export function serverWizard(file) {
   let servers;
   
