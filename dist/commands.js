@@ -44,10 +44,14 @@ function verify(args) {
     });
   }
 
-  _pactNode2.default.verifyPacts(opts).then(function () {
-    (0, _helpers.log)(res);
+  _pactNode2.default.verifyPacts(opts).then(function (pact) {
+    (0, _helpers.log)('=================================================================================');
+    (0, _helpers.log)('Pact ' + args.PACT_FILE + ' verified with following result');
+    (0, _helpers.log)('=================================================================================');
+    (0, _helpers.log)(JSON.stringify(pact, null, 2));
+    (0, _helpers.log)('=================================================================================');
   }, function (err) {
-    return (0, _helpers.log)('Verify failed because of ' + err);
+    return (0, _helpers.log)('Verify failed because of \n' + err);
   });
 }
 
@@ -75,7 +79,7 @@ function publish(args) {
 
   _pactNode2.default.publishPacts(opts).then(function (pact) {
     (0, _helpers.log)('=================================================================================');
-    (0, _helpers.log)('Pact ' + pushfile + ' Published on ' + config.brokerUrl);
+    (0, _helpers.log)('Pact ' + args.PACT_FILE + ' Published on ' + config.brokerUrl);
     (0, _helpers.log)('=================================================================================');
     (0, _helpers.log)(JSON.stringify(pact, null, 2));
     (0, _helpers.log)('=================================================================================');

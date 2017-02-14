@@ -22,8 +22,12 @@ export function verify(args) {
     });
   }
 
-  pact.verifyPacts(opts).then(() => {
-    log(res);
+  pact.verifyPacts(opts).then(pact => {
+    log('=================================================================================');
+    log(`Pact ${args.PACT_FILE} verified with following result`);
+    log('=================================================================================');
+    log(JSON.stringify(pact, null, 2));
+    log('=================================================================================');
   },(err) => log(`Verify failed because of \n${err}`));
 }
 
@@ -51,7 +55,7 @@ export function publish(args) {
 
   pact.publishPacts(opts).then((pact) => {
     log('=================================================================================');
-    log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
+    log(`Pact ${args.PACT_FILE} Published on ${config.brokerUrl}`);
     log('=================================================================================');
     log(JSON.stringify(pact, null, 2));
     log('=================================================================================');
