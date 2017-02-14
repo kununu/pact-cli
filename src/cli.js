@@ -4,7 +4,7 @@ import path from 'path';
 import {die, getParsedArgs, readJSON} from './helpers';
 import setupServers, {getInteractionsPromise} from './setupServers';
 import {serverWizard, interactionWizard, brokerConfigWizard} from './wizards';
-import {publish} from './commands';
+import {publish, verify} from './commands';
 
 const pkg = readJSON(path.resolve(__dirname, '../package.json'));
 const args = getParsedArgs(pkg.version);
@@ -33,4 +33,9 @@ switch(args.subcommand_name) {
   case 'publish':
     publish(args);
   break;
+
+  case 'verify':
+    verify(args);
+  break;
+
 }

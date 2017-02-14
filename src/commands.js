@@ -3,6 +3,27 @@ import {die, getConfig, readJSON, writeJSON, log} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
 
+export function verify(args) {
+  const config = getConfig(); 
+  const opts = {
+    pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
+    providerBaseUrl: args.provider_url,
+    providerStatesUrl: args.states_url,
+    providerStatesSetupUrl: args.setup_url
+  }
+
+  if (config.brokerUser.trim() !== '') {
+    Object.assign(opts, {
+      pactBrokerUsername: config.brokerUser,
+      pactBrokerPassword: config.brokerPassword
+    });
+  }
+
+  pact.verifyPacts(opts).then((res) => {
+    console.log(res);
+  });
+}
+
 export function publish(args) {
   const config = getConfig(); 
 
@@ -18,7 +39,6 @@ export function publish(args) {
     });
   }
 
-  // Dont forget tags
   if (config.brokerUser.trim() !== '') {
     Object.assign(opts, {
       pactBrokerUsername: config.brokerUser,

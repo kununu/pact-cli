@@ -13,6 +13,8 @@ var _setupServers2 = _interopRequireDefault(_setupServers);
 
 var _wizards = require('./wizards');
 
+var _commands = require('./commands');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var pkg = (0, _helpers.readJSON)(_path2.default.resolve(__dirname, '../package.json'));
@@ -43,6 +45,11 @@ switch (args.subcommand_name) {
     break;
 
   case 'publish':
-    (0, _wizards.brokerPublishWizard)(args.PACT_FILE);
+    (0, _commands.publish)(args);
     break;
+
+  case 'verify':
+    (0, _commands.verify)(args);
+    break;
+
 }
