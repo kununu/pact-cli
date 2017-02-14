@@ -39,7 +39,18 @@ A CLI Tool to start a API mock server via pact interaction files.
 
 ### publish
 ```pact-cli publish PACT_FILE```
-- Starts an step-to-step publish generator and publishes a server generated PACT File to a Broker (configurationfile needed)
+  - required arguments:
+    - `-v | --version x.x.x` (SEMVER)
+
+  - optional arguments:
+    - `-t | --tags tag1,tag2,tag3`
+
+### verify
+```pact-cli verify PACT_FILE```
+  - required arguments:
+    - `-u | --states-url url` URL to fetch the provider states for the given provider API.
+    - `-s | --setup-url url` URL to send PUT requests to setup a given provider state.
+    - `-p | --provider-url` Running API provider host endpoint.
 
 ## TODO
  - Silent mode
