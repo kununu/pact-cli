@@ -20,12 +20,18 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _validUrl = require('valid-url');
+
+var _validUrl2 = _interopRequireDefault(_validUrl);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function verify(args) {
   var config = (0, _helpers.getConfig)();
+  var toValidate = _validUrl2.default.isUri(args.PACT_FILE) ? args.PACT_FILE : _path2.default.resolve(process.cwd(), args.PACT_FILE);
+
   var opts = {
-    pactUrls: [_path2.default.resolve(process.cwd(), args.PACT_FILE)],
+    pactUrls: [toValidate],
     providerBaseUrl: args.provider_url,
     providerStatesUrl: args.states_url,
     providerStatesSetupUrl: args.setup_url

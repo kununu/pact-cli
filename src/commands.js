@@ -2,11 +2,14 @@ import fs from 'fs';
 import {die, getConfig, readJSON, writeJSON, log} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
+import validUrl from 'valid-url';
 
 export function verify(args) {
   const config = getConfig(); 
+  const toValidate = validUrl.isUri(args.PACT_FILE) ? args.PACT_FILE : path.resolve(process.cwd(), args.PACT_FILE);
+
   const opts = {
-    pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
+    pactUrls: [toValidate],
     providerBaseUrl: args.provider_url,
     providerStatesUrl: args.states_url,
     providerStatesSetupUrl: args.setup_url
