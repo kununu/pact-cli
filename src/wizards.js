@@ -1,34 +1,37 @@
 import fs from 'fs';
-import prompt from 'prompt';
-import {die, getConfig, readJSON, writeJSON, log} from './helpers';
-import pact from '@pact-foundation/pact-node';
 import path from 'path';
 import {exec} from 'child_process';
+
+import prompt from 'prompt';
+
+import pact from '@pact-foundation/pact-node';
+
+import {die, getConfig, readJSON, writeJSON, log} from './helpers';
 import {makeInteraction} from './templates';
 
-export function brokerPublishWizard(pushfile) {
+export function brokerPublishWizard (pushfile) {
   const config = getConfig();
 
   const schema = {
     properties: {
       consumerVersion: {
         message: 'A string containing a semver-style version',
-        required: true
+        required: true,
       },
       tags: {
-        message: 'Comma seperated List of tags'
-      }
-    }
-  }
+        message: 'Comma seperated List of tags',
+      },
+    },
+  };
 
   prompt.start();
-  prompt.get(schema, function (err, res) {  
+  prompt.get(schema, (err, res) => {
     if (res) {
       const opts = {
         pactUrls: [path.resolve(process.cwd(), pushfile)],
         pactBroker: config.brokerUrl,
-        consumerVersion: res.consumerVersion
-      }
+        consumerVersion: res.consumerVersion,
+      };
 
       if (res.tags.trim() !== '') {
         Object.assign(opts, {
@@ -39,57 +42,57 @@ export function brokerPublishWizard(pushfile) {
       if (config.brokerUser.trim() !== '') {
         Object.assign(opts, {
           pactBrokerUsername: config.brokerUser,
-          pactBrokerPassword: config.brokerPassword
+          pactBrokerPassword: config.brokerPassword,
         });
       }
 
-      pact.publishPacts(opts).then((pact) => {
+      pact.publishPacts(opts).then((pactObject) => {
         log('=================================================================================');
         log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
         log('=================================================================================');
-        console.log(JSON.stringify(pact, null, 2));
+        console.log(JSON.stringify(pactObject, null, 2)); // eslint-disable-line no-console
         log('=================================================================================');
       });
     }
   });
 }
 
-export function serverWizard(file) {
+export function serverWizard (file) {
   let servers;
-  
+
   if (fs.existsSync(file)) {
-    log(`Serverfile found, adding following Server to your config`);
+    log('Serverfile found, adding following Server to your config');
     servers = readJSON(file);
   } else {
     log(`No Serverfile found, creating new @ ${file}`);
     servers = [];
   }
 
-   const schema = {
+  const schema = {
     properties: {
       consumer: {
         message: 'The name of the consumer to be written to the pact contracts, defaults to none',
-        default: 'consumer'
+        default: 'consumer',
       },
       provider: {
         message: 'The name of the provider to be written to the pact contracts, defaults to none',
-        default: 'provider'
+        default: 'provider',
       },
       port: {
         message: 'Port number that the server runs on',
         default: 8888,
-        type: 'integer'
+        type: 'integer',
       },
       spec: {
         message: 'The pact specification version to use when writing pact contracts',
         default: 3,
-        type: 'integer'
-      }
-    }
-  }
+        type: 'integer',
+      },
+    },
+  };
 
   prompt.start();
-  prompt.get(schema, function (err, res) {
+  prompt.get(schema, (err, res) => {
     if (res) {
       servers.push(res);
       writeJSON(servers, file);
@@ -98,28 +101,28 @@ export function serverWizard(file) {
   });
 }
 
-export function brokerConfigWizard() {
+export function brokerConfigWizard () {
   const schema = {
     properties: {
       brokerUrl: {
-        message: 'URL to fetch the provider states for the given provider API'
+        message: 'URL to fetch the provider states for the given provider API',
       },
       brokerUser: {
-        message: 'Username for Pact Broker basic authentication.'
+        message: 'Username for Pact Broker basic authentication.',
       },
       brokerPassword: {
-        message: 'Password for Pact Broker basic authentication'
-      }
-    }
-  }
+        message: 'Password for Pact Broker basic authentication',
+      },
+    },
+  };
   prompt.start();
-  prompt.get(schema, function (err, res) {
+  prompt.get(schema, (err, res) => {
     if (res) {
       const config = {
         brokerUrl: res.brokerUrl,
         brokerUser: res.brokerUser,
-        brokerPassword: res.brokerPassword
-      }
+        brokerPassword: res.brokerPassword,
+      };
 
       const HOME = process.env.HOME || process.env.USERPROFILE;
       const CONFIGPATH = `${HOME}/.pact-cli`;
@@ -130,10 +133,8 @@ export function brokerConfigWizard() {
   });
 }
 
-export function interactionWizard(args) {
-
-  if (!fs.existsSync(args.file))
-    die(`Please create a Serverfile first (pact-cli server add)`);
+export function interactionWizard (args) {
+  if (!fs.existsSync(args.file)) { die('Please create a Serverfile first (pact-cli server add)'); }
 
   const servers = readJSON(args.file);
   const suggestions = servers[0];
@@ -145,19 +146,19 @@ export function interactionWizard(args) {
         pattern: /(json|js)/,
         message: 'Not a valid option or this file already exists',
         default: 'json',
-        conform: function(ext) {
-            return !fs.existsSync(`${interactionPath}.${ext}`)
-        } 
+        conform (ext) {
+          return !fs.existsSync(`${interactionPath}.${ext}`);
+        },
       },
       consumer: {
-        pattern: /^[a-zA-Z\-]+$/,
+        pattern: /^[a-zA-Z-]+$/,
         message: 'Consumer ID must be only letters and dashes',
-        default: `${suggestions.consumer}`
+        default: `${suggestions.consumer}`,
       },
       provider: {
-        pattern: /^[a-zA-Z\-]+$/,
+        pattern: /^[a-zA-Z-]+$/,
         message: 'Provider ID must be only letters and dashes',
-        default: `${suggestions.provider}`
+        default: `${suggestions.provider}`,
       },
       state: {
         message: 'Given State',
@@ -170,26 +171,26 @@ export function interactionWizard(args) {
       method: {
         pattern: /^[A-Z]+$/,
         required: true,
-        default: 'GET'
+        default: 'GET',
       },
       path: {
-        pattern: /^[a-zA-Z0-9\-\/:]+$/,
+        pattern: /^[a-zA-Z0-9\-/:]+$/,
         required: true,
-        default: '/'
-      }
-    }
-  }
+        default: '/',
+      },
+    },
+  };
   prompt.start();
-  prompt.get(schema, function (err, res) {
+  prompt.get(schema, (err, res) => {
     if (res) {
       if (res.interactionType === 'json') {
-        const pact = makeInteraction(res, 'json');
-        writeJSON(pact, `${interactionPath}.json`);
+        const interaction = makeInteraction(res, 'json');
+        writeJSON(interaction, `${interactionPath}.json`);
       } else {
-        const pact = makeInteraction(res, 'js');
+        const interaction = makeInteraction(res, 'js');
         try {
-          fs.writeFileSync(`${interactionPath}.js`, pact, 'utf8');
-        } catch(e) {
+          fs.writeFileSync(`${interactionPath}.js`, interaction, 'utf8');
+        } catch (e) {
           die(`Error occured while saving: ${interactionPath}.js \n${e}`);
         }
       }

@@ -1,7 +1,7 @@
-export function makeInteraction(data, interactionType) {
+export default function makeInteraction (data, interactionType) {
   switch (interactionType) {
     case 'js':
-    return `module.exports = (Pact) => {
+      return `module.exports = (Pact) => {
   return {
     consumer: '${data.consumer}',
     provider: '${data.provider}',
@@ -30,27 +30,29 @@ export function makeInteraction(data, interactionType) {
   }
 }`;
     case 'json':
-    return {
-      consumer: data.consumer,
-      provider: data.provider,
-      interaction: {
-        state: data.state,
-        uponReceiving: data.uponReceiving,
-        withRequest: {
-          method: data.method,
-          path: data.path
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
+      return {
+        consumer: data.consumer,
+        provider: data.provider,
+        interaction: {
+          state: data.state,
+          uponReceiving: data.uponReceiving,
+          withRequest: {
+            method: data.method,
+            path: data.path,
           },
-          body: [
-            {"id": 1, "hello": "world"}
-          ]
-        }
-      }
-    }
+          willRespondWith: {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+            },
+            body: [
+            {id: 1, hello: 'world'},
+            ],
+          },
+        },
+      };
+    default:
+      return undefined;
   }
 }
