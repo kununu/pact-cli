@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "node"
+cache:
+  directories:
+    - $HOME/.npm
+    - node_modules
+  yarn: true
+before_install:
+  - time npm i -g yarn --cache-min 999999999
+install:
+  - time yarn
+script:
+  - time yarn lint
