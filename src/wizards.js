@@ -1,61 +1,11 @@
 import fs from 'fs';
-import path from 'path';
 import {exec} from 'child_process';
 
 import prompt from 'prompt';
 
-import pact from '@pact-foundation/pact-node';
 
-import {die, getConfig, readJSON, writeJSON, log} from './helpers';
+import {die, readJSON, writeJSON, log} from './helpers';
 import {makeInteraction} from './templates';
-
-export function brokerPublishWizard (pushfile) {
-  const config = getConfig();
-
-  const schema = {
-    properties: {
-      consumerVersion: {
-        message: 'A string containing a semver-style version',
-        required: true,
-      },
-      tags: {
-        message: 'Comma seperated List of tags',
-      },
-    },
-  };
-
-  prompt.start();
-  prompt.get(schema, (err, res) => {
-    if (res) {
-      const opts = {
-        pactUrls: [path.resolve(process.cwd(), pushfile)],
-        pactBroker: config.brokerUrl,
-        consumerVersion: res.consumerVersion,
-      };
-
-      if (res.tags.trim() !== '') {
-        Object.assign(opts, {
-          tags: res.tags.split(','),
-        });
-      }
-
-      if (config.brokerUser.trim() !== '') {
-        Object.assign(opts, {
-          pactBrokerUsername: config.brokerUser,
-          pactBrokerPassword: config.brokerPassword,
-        });
-      }
-
-      pact.publishPacts(opts).then((pactObject) => {
-        log('=================================================================================');
-        log(`Pact ${pushfile} Published on ${config.brokerUrl}`);
-        log('=================================================================================');
-        console.log(JSON.stringify(pactObject, null, 2)); // eslint-disable-line no-console
-        log('=================================================================================');
-      });
-    }
-  });
-}
 
 export function serverWizard (file) {
   let servers;

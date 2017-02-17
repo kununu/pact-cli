@@ -79,6 +79,7 @@ function getParsedArgs(pkgContents) {
   var cmdServer = subparsers.addParser('server', { addHelp: true });
   var cmdNew = subparsers.addParser('new', { addHelp: true });
   var cmdPublish = subparsers.addParser('publish', { addHelp: true });
+  var cmdVerify = subparsers.addParser('verify', { addHelp: true });
 
   cmdServer.addArgument(['CHOICE'], {
     action: 'store',
@@ -119,9 +120,40 @@ function getParsedArgs(pkgContents) {
     defaultValue: DEFAULT_SERVERFILE
   });
 
+  cmdPublish.addArgument(['-v', '--version'], {
+    action: 'store',
+    help: 'Version Number (required)',
+    required: true
+  });
+
+  cmdPublish.addArgument(['-t', '--tags'], {
+    action: 'store',
+    help: 'Comma seperated Taglist'
+  });
+
   cmdPublish.addArgument(['PACT_FILE'], {
     action: 'store',
     help: 'Pact File to publish'
+  });
+
+  cmdVerify.addArgument(['PACT_FILE'], {
+    action: 'store',
+    help: 'Pact File to verify'
+  });
+
+  cmdVerify.addArgument(['-u', '--states-url'], {
+    action: 'store',
+    help: 'States Url'
+  });
+
+  cmdVerify.addArgument(['-s', '--setup-url'], {
+    action: 'store',
+    help: 'Setup Url'
+  });
+
+  cmdVerify.addArgument(['-p', '--provider-url'], {
+    action: 'store',
+    help: 'Provider Base Url'
   });
 
   return parser.parseArgs();

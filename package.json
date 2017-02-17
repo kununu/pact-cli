@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "babel src -d dist",
-    "dev": "babel src --watch --out-dir dist",
+    "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build && npm link\"",
     "lint": "eslint src"
   },
   "repository": {
@@ -33,13 +33,14 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.10.0",
-    "watch-cli": "0.2.1"
+    "watch-cli": "^0.2.1"
   },
   "dependencies": {
     "@pact-foundation/pact-node": "4.6.0",
     "argparse": "1.0.9",
     "glob": "7.1.1",
     "pact": "1.0.0-rc.5",
-    "prompt": "1.0.0"
+    "prompt": "1.0.0",
+    "valid-url": "^1.0.9"
   }
 }
