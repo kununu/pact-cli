@@ -11,21 +11,13 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _child_process = require('child_process');
+
 var _prompt = require('prompt');
 
 var _prompt2 = _interopRequireDefault(_prompt);
 
 var _helpers = require('./helpers');
-
-var _pactNode = require('@pact-foundation/pact-node');
-
-var _pactNode2 = _interopRequireDefault(_pactNode);
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _child_process = require('child_process');
 
 var _templates = require('./templates');
 
@@ -108,8 +100,9 @@ function brokerConfigWizard() {
 }
 
 function interactionWizard(args) {
-
-  if (!_fs2.default.existsSync(args.file)) (0, _helpers.die)('Please create a Serverfile first (pact-cli server add)');
+  if (!_fs2.default.existsSync(args.file)) {
+    (0, _helpers.die)('Please create a Serverfile first (pact-cli server add)');
+  }
 
   var servers = (0, _helpers.readJSON)(args.file);
   var suggestions = servers[0];
@@ -126,12 +119,12 @@ function interactionWizard(args) {
         }
       },
       consumer: {
-        pattern: /^[a-zA-Z\-]+$/,
+        pattern: /^[a-zA-Z-]+$/,
         message: 'Consumer ID must be only letters and dashes',
         default: '' + suggestions.consumer
       },
       provider: {
-        pattern: /^[a-zA-Z\-]+$/,
+        pattern: /^[a-zA-Z-]+$/,
         message: 'Provider ID must be only letters and dashes',
         default: '' + suggestions.provider
       },
@@ -149,7 +142,7 @@ function interactionWizard(args) {
         default: 'GET'
       },
       path: {
-        pattern: /^[a-zA-Z0-9\-\/:]+$/,
+        pattern: /^[a-zA-Z0-9\-/:]+$/,
         required: true,
         default: '/'
       }
@@ -159,12 +152,12 @@ function interactionWizard(args) {
   _prompt2.default.get(schema, function (err, res) {
     if (res) {
       if (res.interactionType === 'json') {
-        var _pact = (0, _templates.makeInteraction)(res, 'json');
-        (0, _helpers.writeJSON)(_pact, interactionPath + '.json');
+        var interaction = (0, _templates.makeInteraction)(res, 'json');
+        (0, _helpers.writeJSON)(interaction, interactionPath + '.json');
       } else {
-        var _pact2 = (0, _templates.makeInteraction)(res, 'js');
+        var _interaction = (0, _templates.makeInteraction)(res, 'js');
         try {
-          _fs2.default.writeFileSync(interactionPath + '.js', _pact2, 'utf8');
+          _fs2.default.writeFileSync(interactionPath + '.js', _interaction, 'utf8');
         } catch (e) {
           (0, _helpers.die)('Error occured while saving: ' + interactionPath + '.js \n' + e);
         }

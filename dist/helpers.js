@@ -3,14 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.die = die;
+exports.readJSON = readJSON;
+exports.writeJSON = writeJSON;
 exports.getConfig = getConfig;
 exports.log = log;
-exports.die = die;
 exports.getParsedArgs = getParsedArgs;
-exports.writeJSON = writeJSON;
-exports.readJSON = readJSON;
-
-var _argparse = require('argparse');
 
 var _fs = require('fs');
 
@@ -20,7 +18,36 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
+var _argparse = require('argparse');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function die(msg) {
+  var code = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+
+  process.stderr.write(msg + '\n');
+  process.exit(code);
+}
+
+function readJSON(jsonPath) {
+  if (!_fs2.default.existsSync(jsonPath)) {
+    die('File ' + _path2.default + ' does not exist');
+  }
+
+  try {
+    return JSON.parse(_fs2.default.readFileSync(jsonPath, 'utf-8'));
+  } catch (err) {
+    return die('Malformed JSON in ' + jsonPath + ' \n' + err);
+  }
+}
+
+function writeJSON(obj, jsonPath) {
+  try {
+    _fs2.default.writeFileSync(jsonPath, JSON.stringify(obj, null, 2));
+  } catch (err) {
+    die('Error while saving JSON File: \n' + err);
+  }
+}
 
 function getConfig() {
   var HOME = process.env.HOME || process.env.USERPROFILE;
@@ -35,15 +62,7 @@ function log(msg) {
   process.stdout.write(msg + '\n');
 }
 
-function die(msg) {
-  var code = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-
-  process.stderr.write(msg + '\n');
-  process.exit(code);
-}
-
 function getParsedArgs(pkgContents) {
-
   var DEFAULT_SERVERFILE = './servers.json';
 
   var parser = new _argparse.ArgumentParser({
@@ -54,12 +73,11 @@ function getParsedArgs(pkgContents) {
 
   var subparsers = parser.addSubparsers({
     title: 'subcommands',
-    dest: "subcommand_name"
+    dest: 'subcommand_name'
   });
 
   var cmdServer = subparsers.addParser('server', { addHelp: true });
   var cmdNew = subparsers.addParser('new', { addHelp: true });
-  var cmdConfig = subparsers.addParser('config', { addHelp: true });
   var cmdPublish = subparsers.addParser('publish', { addHelp: true });
   var cmdVerify = subparsers.addParser('verify', { addHelp: true });
 
@@ -139,22 +157,4 @@ function getParsedArgs(pkgContents) {
   });
 
   return parser.parseArgs();
-}
-
-function writeJSON(obj, path) {
-  try {
-    _fs2.default.writeFileSync(path, JSON.stringify(obj, null, 2));
-  } catch (err) {
-    die('Error while saving JSON File: \n' + err);
-  }
-}
-
-function readJSON(path) {
-  if (!_fs2.default.existsSync(path)) die('File ' + path + ' does not exist');
-
-  try {
-    return JSON.parse(_fs2.default.readFileSync(path, 'utf-8'));
-  } catch (err) {
-    die('Malformed JSON in ' + path + ' \n' + err);
-  }
 }

@@ -6,16 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.verify = verify;
 exports.publish = publish;
 
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _helpers = require('./helpers');
-
-var _pactNode = require('@pact-foundation/pact-node');
-
-var _pactNode2 = _interopRequireDefault(_pactNode);
-
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
@@ -23,6 +13,12 @@ var _path2 = _interopRequireDefault(_path);
 var _validUrl = require('valid-url');
 
 var _validUrl2 = _interopRequireDefault(_validUrl);
+
+var _pactNode = require('@pact-foundation/pact-node');
+
+var _pactNode2 = _interopRequireDefault(_pactNode);
+
+var _helpers = require('./helpers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44,11 +40,11 @@ function verify(args) {
     });
   }
 
-  _pactNode2.default.verifyPacts(opts).then(function (pact) {
+  _pactNode2.default.verifyPacts(opts).then(function (pactObject) {
     (0, _helpers.log)('=================================================================================');
     (0, _helpers.log)('Pact ' + args.PACT_FILE + ' verified with following result');
     (0, _helpers.log)('=================================================================================');
-    (0, _helpers.log)(JSON.stringify(pact, null, 2));
+    (0, _helpers.log)(JSON.stringify(pactObject, null, 2));
     (0, _helpers.log)('=================================================================================');
   }, function (err) {
     return (0, _helpers.log)('Verify failed because of \n' + err);
@@ -77,11 +73,11 @@ function publish(args) {
     });
   }
 
-  _pactNode2.default.publishPacts(opts).then(function (pact) {
+  _pactNode2.default.publishPacts(opts).then(function (pactObject) {
     (0, _helpers.log)('=================================================================================');
     (0, _helpers.log)('Pact ' + args.PACT_FILE + ' Published on ' + config.brokerUrl);
     (0, _helpers.log)('=================================================================================');
-    (0, _helpers.log)(JSON.stringify(pact, null, 2));
+    (0, _helpers.log)(JSON.stringify(pactObject, null, 2));
     (0, _helpers.log)('=================================================================================');
   }, function (err) {
     return (0, _helpers.log)('Publish failed because of \n' + err);

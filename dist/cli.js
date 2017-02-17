@@ -23,14 +23,12 @@ var args = (0, _helpers.getParsedArgs)(pkg.version);
 switch (args.subcommand_name) {
   case 'server':
     if (args.CHOICE === 'start') {
-      (function () {
-        var servers = (0, _helpers.readJSON)(args.file);
-        (0, _setupServers.getInteractionsPromise)(args).then(function (interactions) {
-          (0, _setupServers2.default)(args, servers, interactions);
-        }, function (err) {
-          console.log(err);
-        });
-      })();
+      var servers = (0, _helpers.readJSON)(args.file);
+      (0, _setupServers.getInteractionsPromise)().then(function (interactions) {
+        (0, _setupServers2.default)(args, servers, interactions);
+      }, function (err) {
+        console.log(err);
+      }); // eslint-disable-line no-console
     } else if (args.CHOICE === 'add') {
       (0, _wizards.serverWizard)(args.file);
     }
@@ -52,4 +50,6 @@ switch (args.subcommand_name) {
     (0, _commands.verify)(args);
     break;
 
+  default:
+    break;
 }

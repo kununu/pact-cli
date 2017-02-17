@@ -1,12 +1,15 @@
-import Pact from 'pact';
-import wrapper from '@pact-foundation/pact-node';
-import glob from 'glob';
-import {log, readJSON} from './helpers';
 import path from 'path';
 
-export function getInteractionsPromise(args) {
+import Pact from 'pact';
+import glob from 'glob';
+
+import wrapper from '@pact-foundation/pact-node';
+
+import {log, readJSON} from './helpers';
+
+export function getInteractionsPromise () {
   return new Promise((resolve, reject) => {
-    log(`Searching for interaction files ...`);
+    log('Searching for interaction files ...');
 
     const interactions = [];
     glob('**/*.interaction.+(json|js)', {ignore: 'node_modules/'}, (err, files) => {
@@ -14,20 +17,23 @@ export function getInteractionsPromise(args) {
         reject(err);
       }
 
-      files.forEach(file => {
-        switch(path.extname(file)) {
+      files.forEach((file) => {
+        switch (path.extname(file)) {
 
           case '.js':
             interactions.push(
-              require(`${process.cwd()}/${file}`)(Pact.Matchers)
+              require(`${process.cwd()}/${file}`)(Pact.Matchers), // eslint-disable-line global-require, import/no-dynamic-require
             );
-          break;
+            break;
 
           case '.json':
             interactions.push(
-              readJSON(file)
+              readJSON(file),
             );
-          break;
+            break;
+
+          default:
+            break;
         }
       });
       resolve(interactions);
@@ -35,14 +41,14 @@ export function getInteractionsPromise(args) {
   });
 }
 
-export default function setupServers(args, servers, interactions) {
-  log(`Startup Servers ...`);
+export default function setupServers (args, servers, interactions) {
+  log('Startup Servers ...');
 
-  servers.forEach(specs => {
-    const filteredInteractions = interactions.filter(interaction => {
-      return specs.consumer == interaction.consumer &&
-        specs.provider == interaction.provider;
-    });
+  servers.forEach((specs) => {
+    const filteredInteractions = interactions.filter((interaction) =>
+      specs.consumer === interaction.consumer &&
+      specs.provider === interaction.provider,
+    );
 
     if (filteredInteractions.length > 0) {
       const mockserver = wrapper.createServer({
@@ -51,23 +57,22 @@ export default function setupServers(args, servers, interactions) {
         dir: args.contract_dir,
         spec: specs.spec,
         consumer: specs.consumer,
-        provider: specs.provider
+        provider: specs.provider,
       });
 
       mockserver.start().then(() => {
         log(`Server for ${specs.provider} -> ${specs.consumer} started on port:${specs.port}`);
 
-        filteredInteractions.forEach(interaction => {
+        filteredInteractions.forEach((interaction) => {
           const pactProvider = Pact({
-            consumer:interaction.consumer,
-            provider:interaction.provider,
-            port:specs.port
+            consumer: interaction.consumer,
+            provider: interaction.provider,
+            port: specs.port,
           });
-          const url =`(${interaction.interaction.withRequest.method}) http://localhost:${specs.port}${interaction.interaction.withRequest.path}`
+          const url = `(${interaction.interaction.withRequest.method}) http://localhost:${specs.port}${interaction.interaction.withRequest.path}`;
           log(`Add Interaction "${interaction.interaction.state}" on ${url}`);
           pactProvider.addInteraction(interaction.interaction);
         });
-        
       });
     } else {
       log(`No Interactions for ${specs.provider} -> ${specs.consumer} found - not creating server`);

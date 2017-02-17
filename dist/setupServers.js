@@ -6,27 +6,27 @@ Object.defineProperty(exports, "__esModule", {
 exports.getInteractionsPromise = getInteractionsPromise;
 exports.default = setupServers;
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 var _pact = require('pact');
 
 var _pact2 = _interopRequireDefault(_pact);
-
-var _pactNode = require('@pact-foundation/pact-node');
-
-var _pactNode2 = _interopRequireDefault(_pactNode);
 
 var _glob = require('glob');
 
 var _glob2 = _interopRequireDefault(_glob);
 
+var _pactNode = require('@pact-foundation/pact-node');
+
+var _pactNode2 = _interopRequireDefault(_pactNode);
+
 var _helpers = require('./helpers');
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function getInteractionsPromise(args) {
+function getInteractionsPromise() {
   return new Promise(function (resolve, reject) {
     (0, _helpers.log)('Searching for interaction files ...');
 
@@ -46,6 +46,9 @@ function getInteractionsPromise(args) {
           case '.json':
             interactions.push((0, _helpers.readJSON)(file));
             break;
+
+          default:
+            break;
         }
       });
       resolve(interactions);
@@ -58,7 +61,7 @@ function setupServers(args, servers, interactions) {
 
   servers.forEach(function (specs) {
     var filteredInteractions = interactions.filter(function (interaction) {
-      return specs.consumer == interaction.consumer && specs.provider == interaction.provider;
+      return specs.consumer === interaction.consumer && specs.provider === interaction.provider;
     });
 
     if (filteredInteractions.length > 0) {

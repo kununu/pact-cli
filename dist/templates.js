@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.makeInteraction = makeInteraction;
+exports.default = makeInteraction;
 function makeInteraction(data, interactionType) {
   switch (interactionType) {
     case 'js':
@@ -22,12 +22,14 @@ function makeInteraction(data, interactionType) {
           willRespondWith: {
             status: 200,
             headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "*"
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
             },
-            body: [{ "id": 1, "hello": "world" }]
+            body: [{ id: 1, hello: 'world' }]
           }
         }
       };
+    default:
+      return undefined;
   }
 }
