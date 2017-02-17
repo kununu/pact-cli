@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
-    "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build\""
+    "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build && npm link\""
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
     "argparse": "1.0.9",
     "glob": "7.1.1",
     "pact": "1.0.0-rc.5",
-    "prompt": "1.0.0"
+    "prompt": "1.0.0",
+    "valid-url": "^1.0.9"
   }
 }

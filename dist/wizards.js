@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.brokerPublishWizard = brokerPublishWizard;
 exports.serverWizard = serverWizard;
 exports.brokerConfigWizard = brokerConfigWizard;
 exports.interactionWizard = interactionWizard;
@@ -31,54 +30,6 @@ var _child_process = require('child_process');
 var _templates = require('./templates');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function brokerPublishWizard(pushfile) {
-  var config = (0, _helpers.getConfig)();
-
-  var schema = {
-    properties: {
-      consumerVersion: {
-        message: 'A string containing a semver-style version',
-        required: true
-      },
-      tags: {
-        message: 'Comma seperated List of tags'
-      }
-    }
-  };
-
-  _prompt2.default.start();
-  _prompt2.default.get(schema, function (err, res) {
-    if (res) {
-      var opts = {
-        pactUrls: [_path2.default.resolve(process.cwd(), pushfile)],
-        pactBroker: config.brokerUrl,
-        consumerVersion: res.consumerVersion
-      };
-
-      if (res.tags.trim() !== '') {
-        Object.assign(opts, {
-          tags: res.tags.split(',')
-        });
-      }
-
-      if (config.brokerUser.trim() !== '') {
-        Object.assign(opts, {
-          pactBrokerUsername: config.brokerUser,
-          pactBrokerPassword: config.brokerPassword
-        });
-      }
-
-      _pactNode2.default.publishPacts(opts).then(function (pact) {
-        (0, _helpers.log)('=================================================================================');
-        (0, _helpers.log)('Pact ' + pushfile + ' Published on ' + config.brokerUrl);
-        (0, _helpers.log)('=================================================================================');
-        console.log(JSON.stringify(pact, null, 2));
-        (0, _helpers.log)('=================================================================================');
-      });
-    }
-  });
-}
 
 function serverWizard(file) {
   var servers = void 0;
