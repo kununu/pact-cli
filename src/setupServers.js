@@ -51,7 +51,8 @@ export default function setupServers(args, servers, interactions) {
         dir: args.contract_dir,
         spec: specs.spec,
         consumer: specs.consumer,
-        provider: specs.provider
+        provider: specs.provider,
+        host: specs.host,
       });
 
       mockserver.start().then(() => {

@@ -32,6 +32,10 @@ export function serverWizard(file) {
         default: 8888,
         type: 'integer'
       },
+      host: {
+        message: 'Host the server listens to, defaults to 0.0.0.0 (insecure, only for internal nats)',
+        default: '0.0.0.0'
+      },
       spec: {
         message: 'The pact specification version to use when writing pact contracts',
         default: 3,
