@@ -5,7 +5,7 @@ import path from 'path';
 export function getConfig() {
   const HOME = process.env.HOME || process.env.USERPROFILE;
   const CONFIGFILE = `${HOME}/.pact-cli`;
-  
+
   if (!fs.existsSync(CONFIGFILE))
     die(`You have no Configfile yet (pact-cli config)`)
 
@@ -24,13 +24,14 @@ export function die(msg, code=1) {
 export function getParsedArgs(pkgContents) {
 
   const DEFAULT_SERVERFILE = './servers.json';
+  const DEFAULT_DAEMON = false;
 
   var parser = new ArgumentParser({
     version: pkgContents.version,
     addHelp:true,
     description: pkgContents.description,
   });
-   
+
   var subparsers = parser.addSubparsers({
     title:'subcommands',
     dest:"subcommand_name"
@@ -62,11 +63,16 @@ export function getParsedArgs(pkgContents) {
     defaultValue: path.resolve(process.cwd(), './pact-cli-server.log')
   });
 
-  cmdServer.addArgument(['-d', '--contract-dir'], {
+  cmdServer.addArgument(['-c', '--contract-dir'], {
     action: 'store',
     help: 'Contracts directory (default: ./tmp/pacts)',
     metavar: 'DIRECTORY',
     defaultValue: './tmp/pacts'
+  });
+
+  cmdServer.addArgument(['-d', '--daemon'], {
+    action: 'storeTrue',
+    help: 'Free stdin after creating servers',
   });
 
   cmdNew.addArgument(['INTERACTIONNAME'], {

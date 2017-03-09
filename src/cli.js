@@ -14,14 +14,14 @@ switch(args.subcommand_name) {
     if (args.CHOICE === 'start') {
       const servers = readJSON(args.file);
         getInteractionsPromise(args).then((interactions) => {
-        setupServers(args, servers, interactions);
-      }, (err) =>  { console.log(err) }); 
+          setupServers(args, servers, interactions);
+      }, (err) =>  { console.log(err) });
 
     } else if (args.CHOICE === 'add') {
       serverWizard(args.file);
     }
   break;
-  
+
   case 'new':
     interactionWizard(args);
   break;
