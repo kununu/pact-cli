@@ -45,6 +45,7 @@ function die(msg) {
 function getParsedArgs(pkgContents) {
 
   var DEFAULT_SERVERFILE = './servers.json';
+  var DEFAULT_DAEMON = false;
 
   var parser = new _argparse.ArgumentParser({
     version: pkgContents.version,
@@ -83,11 +84,16 @@ function getParsedArgs(pkgContents) {
     defaultValue: _path2.default.resolve(process.cwd(), './pact-cli-server.log')
   });
 
-  cmdServer.addArgument(['-d', '--contract-dir'], {
+  cmdServer.addArgument(['-c', '--contract-dir'], {
     action: 'store',
     help: 'Contracts directory (default: ./tmp/pacts)',
     metavar: 'DIRECTORY',
     defaultValue: './tmp/pacts'
+  });
+
+  cmdServer.addArgument(['-d', '--daemon'], {
+    action: 'storeTrue',
+    help: 'Free stdin after creating servers'
   });
 
   cmdNew.addArgument(['INTERACTIONNAME'], {

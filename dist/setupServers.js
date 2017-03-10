@@ -54,6 +54,11 @@ function getInteractionsPromise(args) {
 }
 
 function setupServers(args, servers, interactions) {
+  if (args.daemon) {
+    (0, _helpers.log)('Start Daemon');
+    require('daemon')();
+  }
+
   (0, _helpers.log)('Startup Servers ...');
 
   servers.forEach(function (specs) {

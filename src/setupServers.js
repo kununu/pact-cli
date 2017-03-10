@@ -36,6 +36,11 @@ export function getInteractionsPromise(args) {
 }
 
 export default function setupServers(args, servers, interactions) {
+  if (args.daemon) {
+    log(`Start Daemon`);
+    require('daemon')();
+  }
+
   log(`Startup Servers ...`);
 
   servers.forEach(specs => {
@@ -68,7 +73,6 @@ export default function setupServers(args, servers, interactions) {
           log(`Add Interaction "${interaction.interaction.state}" on ${url}`);
           pactProvider.addInteraction(interaction.interaction);
         });
-        
       });
     } else {
       log(`No Interactions for ${specs.provider} -> ${specs.consumer} found - not creating server`);

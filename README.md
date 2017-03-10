@@ -24,7 +24,8 @@ A CLI Tool to start a API mock server via pact interaction files.
   - optional arguments:
     - `-f | --file ./path-to-serverfile`
     - `-l | --log-path ./pact-cli-server.log` (path to logfile)
-    - `-d | --contract-dir ./pacts` (path for server-written pacts)
+    - `-c | --contract-dir ./pacts` (path for server-written pacts)
+    - `-d | --daemon` if set it will run mockservers in background
 
 ### new
 ```pact-cli new INTERACTION_NAME ```
