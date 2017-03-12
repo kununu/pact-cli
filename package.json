@@ -1,6 +1,6 @@
 {
   "name": "pact-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "CLI Tool to start an API Mock Server via PACT interaction Files and communicating with PACT Brokers",
   "main": "dist/index.js",
   "bin": {
