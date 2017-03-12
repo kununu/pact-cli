@@ -7,6 +7,7 @@
     "pact-cli": "dist/cli.js"
   },
   "scripts": {
+    "test": "jest --watch",
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
     "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build && npm link\""
   },
@@ -31,10 +32,13 @@
   "dependencies": {
     "@pact-foundation/pact-node": "4.6.0",
     "argparse": "1.0.9",
+    "babel-jest": "^19.0.0",
     "daemon": "^1.1.0",
     "glob": "7.1.1",
+    "jest": "^19.0.2",
     "pact": "1.0.0-rc.5",
     "prompt": "1.0.0",
+    "request": "^2.81.0",
     "valid-url": "^1.0.9"
   }
 }
