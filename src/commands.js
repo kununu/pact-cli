@@ -1,10 +1,11 @@
+import fs from 'fs';
+import {die, getConfig, readJSON, writeJSON, log, bumpVersion} from './helpers';
 import pact from '@pact-foundation/pact-node';
 
 import path from 'path';
 
 import validUrl from 'valid-url';
-
-import {getConfig, log} from './helpers';
+import {getVersionForPact} from './pactBrokerHelper';
 
 export function verify (args) {
   const config = getConfig();
