@@ -1,11 +1,12 @@
 import fs from 'fs';
-import {die, getConfig, readJSON, writeJSON, log} from './helpers';
+import {die, getConfig, readJSON, writeJSON, log, bumpVersion} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
 import validUrl from 'valid-url';
+import {getVersionForPact} from './pactBrokerHelper';
 
 export function verify(args) {
-  const config = getConfig(); 
+  const config = getConfig();
   const toValidate = validUrl.isUri(args.PACT_FILE) ? args.PACT_FILE : path.resolve(process.cwd(), args.PACT_FILE);
 
   const opts = {
@@ -32,7 +33,7 @@ export function verify(args) {
 }
 
 export function publish(args) {
-  const config = getConfig(); 
+  const config = getConfig();
 
   const opts = {
     pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
