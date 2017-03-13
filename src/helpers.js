@@ -1,6 +1,7 @@
 import {ArgumentParser} from 'argparse';
 import fs from 'fs';
 import path from 'path';
+const semver = require('semver');
 
 export function getConfig() {
   const HOME = process.env.HOME || process.env.USERPROFILE;
@@ -143,4 +144,8 @@ export function readJSON(path) {
   } catch(err) {
     die(`Malformed JSON in ${path} \n${err}`)
   }
+}
+
+export function bumpVersion(version) {
+  return semver.inc(version, 'patch');
 }
