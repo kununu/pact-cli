@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+const semver = require('semver');
 
 import {ArgumentParser} from 'argparse';
 
@@ -139,4 +140,8 @@ export function writeJSON (obj, filePath) {
   } catch (err) {
     die(`Error while saving JSON File: \n${err}`);
   }
+}
+
+export function bumpVersion(version) {
+  return semver.inc(version, 'patch');
 }
