@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "jest --watch",
+    "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist --ignore test.js",
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
     "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build && npm link\"",
     "lint": "eslint src",
