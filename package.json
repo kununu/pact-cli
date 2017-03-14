@@ -8,8 +8,7 @@
   },
   "scripts": {
     "test": "jest --watch",
-    "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist --ignore test.js",
-    "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
+    "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist --ignore test.js,__mocks__",
     "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build && npm link\"",
     "lint": "eslint src",
     "lint-fix": "eslint --fix src"
@@ -48,6 +47,7 @@
     "pact": "1.0.0-rc.5",
     "prompt": "1.0.0",
     "request": "^2.81.0",
+    "request-promise": "^4.1.1",
     "semver": "^5.3.0",
     "valid-url": "^1.0.9"
   }

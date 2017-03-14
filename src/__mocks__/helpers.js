@@ -1,9 +1,10 @@
 /*
   Mocked Helper js - add non-mocked functions as required
 */
-import {bumpVersion} from './helpers';
+const bumpVersion = require.requireActual('../helpers').bumpVersion;
 
 export {bumpVersion};
+
 
 export function getConfig() {
   return {

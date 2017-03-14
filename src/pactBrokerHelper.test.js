@@ -27,6 +27,6 @@ describe('creation for pact-brokern endpoints', () => {
       provider: 'test-provider',
     };
 
-    expect(getBrokerEndpoint('consumer-provider', options)).toBe('/pacts/provider/test-provider/test-consumer/latest');
+    expect(getBrokerEndpoint('consumer-provider', options)).toBe('pacts/provider/test-provider/consumer/test-consumer/latest');
   });
 });
