@@ -32,6 +32,10 @@ export function getBrokerEndpoint(type, options) {
   }
 }
 
+export function getParticipantFromPactfile(pactFile, participant) {
+  return require(pactFile)[participant].name;
+}
+
 function requestUrlFromBroker(endpoint) {
   return request(endpoint);
 }

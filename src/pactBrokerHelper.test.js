@@ -1,4 +1,5 @@
-import {getVersionForPact, getBrokerEndpoint} from './pactBrokerHelper';
+import path from 'path';
+import {getVersionForPact, getBrokerEndpoint, getParticipantFromPactfile} from './pactBrokerHelper';
 
 describe('version handling based on pact', () => {
   test('get version for pact provider consumer latest pact', () => {
@@ -28,5 +29,19 @@ describe('creation for pact-brokern endpoints', () => {
     };
 
     expect(getBrokerEndpoint('consumer-provider', options)).toBe('pacts/provider/test-provider/consumer/test-consumer/latest');
+  });
+});
+
+describe('Extract correct properties from pact', () => {
+  ['provider', 'consumer'].forEach((participant) => {
+    test(`get ${participant} from pact file`, () => {
+      expect(
+        getParticipantFromPactfile(
+          path.resolve(__dirname, '../__mocks__/data/test-pact-file.json'),
+          participant
+        )
+      ).toBe(`test-${participant}`);
+    });
+
   });
 });
