@@ -91,7 +91,6 @@ export function getParsedArgs(pkgContents) {
   cmdPublish.addArgument(['-v', '--version'], {
     action: 'store',
     help: 'Version Number (required)',
-    required: true
   });
 
   cmdPublish.addArgument(['-t', '--tags'], {

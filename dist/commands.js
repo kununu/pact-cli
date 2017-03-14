@@ -24,6 +24,8 @@ var _validUrl = require('valid-url');
 
 var _validUrl2 = _interopRequireDefault(_validUrl);
 
+var _pactBrokerHelper = require('./pactBrokerHelper');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function verify(args) {
@@ -77,8 +79,32 @@ function publish(args) {
     });
   }
 
+  // set version from pact-broker if not given
+  if (args.version === null) {
+    var consumer = 'www',
+        provider = 'users-service';
+
+    var currentVersion = (0, _pactBrokerHelper.getVersionForPact)(consumer, provider, config.brokerUrl).then(function (version) {
+      Object.assign(opts, {
+        consumerVersion: (0, _helpers.bumpVersion)(version)
+      });
+      console.log('hell world');
+      publishPacts(opts, args, config);
+    }).catch(function (err) {
+      console.log(err);
+    });
+
+    return;
+  }
+
+  publishPacts(opts, args);
+}
+
+function publishPacts(opts, args, config) {
+
   _pactNode2.default.publishPacts(opts).then(function (pact) {
     (0, _helpers.log)('=================================================================================');
+    console.log('here wear', opts);
     (0, _helpers.log)('Pact ' + args.PACT_FILE + ' Published on ' + config.brokerUrl);
     (0, _helpers.log)('=================================================================================');
     (0, _helpers.log)(JSON.stringify(pact, null, 2));

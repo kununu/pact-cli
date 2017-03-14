@@ -5,10 +5,8 @@ function request(url) {
         return new Promise((resolve, reject) => {
           resolve(require('./data/latest-tag-pact.json'));
         });
-      break;
     default:
       throw new Error('non defined scenario');
-
   }
   return 'response';
 }

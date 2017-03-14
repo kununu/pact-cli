@@ -54,7 +54,32 @@ export function publish(args) {
     });
   }
 
-  pact.publishPacts(opts).then((pact) => {
+  // set version from pact-broker if not given
+  if (args.version === null) {
+    const
+      consumer = 'www',
+      provider = 'users-service';
+
+    return getVersionForPact(consumer, provider, config.brokerUrl)
+      .then((version) => {
+        Object.assign(opts, {
+          consumerVersion: bumpVersion(version)
+        });
+
+        return publishPacts(opts, args, config);
+      }).catch((err) => {
+        log(err);
+      });
+
+      return;
+  }
+
+  return publishPacts(opts, args, config);
+}
+
+function publishPacts(opts, args, config) {
+  return pact.publishPacts(opts).then((pact) => {
+    console.log('oh no', pact);
     log('=================================================================================');
     log(`Pact ${args.PACT_FILE} Published on ${config.brokerUrl}`);
     log('=================================================================================');

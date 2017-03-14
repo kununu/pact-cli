@@ -9,6 +9,7 @@ exports.die = die;
 exports.getParsedArgs = getParsedArgs;
 exports.writeJSON = writeJSON;
 exports.readJSON = readJSON;
+exports.bumpVersion = bumpVersion;
 
 var _argparse = require('argparse');
 
@@ -21,6 +22,8 @@ var _path = require('path');
 var _path2 = _interopRequireDefault(_path);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var semver = require('semver');
 
 function getConfig() {
   var HOME = process.env.HOME || process.env.USERPROFILE;
@@ -110,8 +113,7 @@ function getParsedArgs(pkgContents) {
 
   cmdPublish.addArgument(['-v', '--version'], {
     action: 'store',
-    help: 'Version Number (required)',
-    required: true
+    help: 'Version Number (required)'
   });
 
   cmdPublish.addArgument(['-t', '--tags'], {
@@ -163,4 +165,8 @@ function readJSON(path) {
   } catch (err) {
     die('Malformed JSON in ' + path + ' \n' + err);
   }
+}
+
+function bumpVersion(version) {
+  return semver.inc(version, 'patch');
 }
