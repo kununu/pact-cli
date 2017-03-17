@@ -7,7 +7,7 @@
     "pact-cli": "dist/cli.js"
   },
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest --watch --env node",
     "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist --ignore test.js,__mocks__",
     "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build && npm link\"",
     "lint": "eslint src",

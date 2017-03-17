@@ -97,13 +97,17 @@ export function getParsedArgs (pkgContents) {
 
   cmdPublish.addArgument(['-v', '--version'], {
     action: 'store',
-    help: 'Version Number (required)',
-    required: true,
+    help: 'Version Number',
   });
 
   cmdPublish.addArgument(['-t', '--tags'], {
     action: 'store',
     help: 'Comma seperated Taglist',
+  });
+
+  cmdPublish.addArgument(['-b', '--branch'], {
+    action: 'store',
+    help: 'branch-name will be added to tags and version bumped accordingly'
   });
 
   cmdPublish.addArgument(['PACT_FILE'], {
@@ -143,5 +147,22 @@ export function writeJSON (obj, filePath) {
 }
 
 export function bumpVersion(version) {
+
+  if (branch === 'master') {
+    return semver.inc(version, 'minor');
+  }
+
+  // branch given but not master = feature-branch
+  // but no prerelase
+  if (branch && null === semver.prerelease(version)) {
+    return semver.inc(version, 'preminor', 'rc');
+  }
+
+  if (branch) {
+    return semver.inc(version, 'pre');
+  }
+
+  // default to patch increment
   return semver.inc(version, 'patch');
+
 }
