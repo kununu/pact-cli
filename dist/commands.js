@@ -58,17 +58,30 @@ function verify(args) {
 }
 
 function publish(args) {
-  var config = (0, _helpers.getConfig)();
-
-  var opts = {
+  var config = (0, _helpers.getConfig)(),
+      fullPactPath = _path2.default.resolve(process.cwd(), args.PACT_FILE),
+      opts = {
     pactUrls: [_path2.default.resolve(process.cwd(), args.PACT_FILE)],
     pactBroker: config.brokerUrl,
     consumerVersion: args.version
   };
 
-  if (args.tags !== null) {
+  if (args.tags) {
     Object.assign(opts, {
       tags: args.tags.split(',')
+    });
+  }
+
+  if (!opts.tags) {
+    Object.assign(opts, {
+      tags: []
+    });
+  }
+
+  if (args.branch) {
+    opts.tags.push(args.branch);
+    Object.assign(opts, {
+      tags: opts.tags
     });
   }
 
@@ -81,30 +94,28 @@ function publish(args) {
 
   // set version from pact-broker if not given
   if (args.version === null) {
-    var consumer = 'www',
-        provider = 'users-service';
+    var consumer = (0, _pactBrokerHelper.getParticipantFromPactfile)(fullPactPath, 'consumer'),
+        provider = (0, _pactBrokerHelper.getParticipantFromPactfile)(fullPactPath, 'provider');
 
-    var currentVersion = (0, _pactBrokerHelper.getVersionForPact)(consumer, provider, config.brokerUrl).then(function (version) {
+    return (0, _pactBrokerHelper.getVersionForPact)(consumer, provider, config.brokerUrl).then(function (version) {
       Object.assign(opts, {
-        consumerVersion: (0, _helpers.bumpVersion)(version)
+        consumerVersion: (0, _helpers.bumpVersion)(version, args.branch)
       });
-      console.log('hell world');
-      publishPacts(opts, args, config);
+
+      return publishPacts(opts, args, config);
     }).catch(function (err) {
-      console.log(err);
+      (0, _helpers.log)(err);
     });
 
     return;
   }
 
-  publishPacts(opts, args);
+  return publishPacts(opts, args, config);
 }
 
 function publishPacts(opts, args, config) {
-
-  _pactNode2.default.publishPacts(opts).then(function (pact) {
+  return _pactNode2.default.publishPacts(opts).then(function (pact) {
     (0, _helpers.log)('=================================================================================');
-    console.log('here wear', opts);
     (0, _helpers.log)('Pact ' + args.PACT_FILE + ' Published on ' + config.brokerUrl);
     (0, _helpers.log)('=================================================================================');
     (0, _helpers.log)(JSON.stringify(pact, null, 2));

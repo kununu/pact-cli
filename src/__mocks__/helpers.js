@@ -5,7 +5,6 @@ const bumpVersion = require.requireActual('../helpers').bumpVersion;
 
 export {bumpVersion};
 
-
 export function getConfig() {
   return {
     brokerUrl: "http://127.0.0.1:5000",

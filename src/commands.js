@@ -3,7 +3,7 @@ import {die, getConfig, readJSON, writeJSON, log, bumpVersion} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
 import validUrl from 'valid-url';
-import {getVersionForPact} from './pactBrokerHelper';
+import {getVersionForPact, getParticipantFromPactfile} from './pactBrokerHelper';
 
 export function verify(args) {
   const config = getConfig();
@@ -33,17 +33,31 @@ export function verify(args) {
 }
 
 export function publish(args) {
-  const config = getConfig();
+  const
+    config = getConfig(),
+    fullPactPath = path.resolve(process.cwd(), args.PACT_FILE),
+    opts = {
+      pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
+      pactBroker: config.brokerUrl,
+      consumerVersion: args.version
+    };
 
-  const opts = {
-    pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
-    pactBroker: config.brokerUrl,
-    consumerVersion: args.version
-  }
-
-  if (args.tags !== null) {
+  if (args.tags) {
     Object.assign(opts, {
       tags: args.tags.split(','),
+    });
+  }
+
+  if (!opts.tags) {
+    Object.assign(opts, {
+      tags: []
+    });
+  }
+
+  if (args.branch) {
+    opts.tags.push(args.branch);
+    Object.assign(opts, {
+      tags: opts.tags
     });
   }
 
@@ -57,13 +71,13 @@ export function publish(args) {
   // set version from pact-broker if not given
   if (args.version === null) {
     const
-      consumer = 'www',
-      provider = 'users-service';
+      consumer = getParticipantFromPactfile(fullPactPath, 'consumer'),
+      provider = getParticipantFromPactfile(fullPactPath, 'provider');
 
     return getVersionForPact(consumer, provider, config.brokerUrl)
       .then((version) => {
         Object.assign(opts, {
-          consumerVersion: bumpVersion(version)
+          consumerVersion: bumpVersion(version, args.branch)
         });
 
         return publishPacts(opts, args, config);

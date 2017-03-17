@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getVersionForPact = getVersionForPact;
 exports.getBrokerEndpoint = getBrokerEndpoint;
+exports.getParticipantFromPactfile = getParticipantFromPactfile;
 
 var _url = require('url');
 
@@ -40,6 +41,10 @@ function getBrokerEndpoint(type, options) {
     default:
       throw new Error('not definied endpoint type');
   }
+}
+
+function getParticipantFromPactfile(pactFile, participant) {
+  return require(pactFile)[participant].name;
 }
 
 function requestUrlFromBroker(endpoint) {
