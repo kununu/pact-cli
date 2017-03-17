@@ -24,65 +24,50 @@ describe('publish pacts to broker', () => {
   beforeEach(() => {
     publishPacts.mockClear();
   });
-  // different scenarios to test against
-  [
-    {
-      branch: 'master',
-      version: '1.0.1',
-    },
-    // {
-    //   branch: 'feature-branch',
-    //   version: '1.1.0-rc.1'
-    // }
-  ].forEach((item) => {
-    test(`publish pact from ${item.branch} with prexisting pact`, (done) => {
-      // mocked config
 
-      // set mock scenario for
-      global.MOCK_REQUEST_SCENARIO = 'broker-latest-pact';
-
-      publish({
-        PACT_FILE: pactFile,
-        tags: null,
-        version: null
-      }, '/test').then(() => {
-        expect(publishPacts).toHaveBeenCalled();
-        expect(publishPacts.mock.calls[0][0]).toMatchObject({
-          consumerVersion: item.version,
-          pactBroker: config.brokerUrl,
-          pactUrls: [pactFileFullPath],
-        });
-        done();
-      });
-    });
+  afterEach(() => {
+    delete global.MOCK_REQUEST_SCENARIO;
+    delete global.MOCK_REQUEST_TAG;
   });
 
+  // different scenarios to test against
   [
     {
       desc: 'added to tags list',
       tags: 'hello,world',
       branch: 'branch',
       version: '1.0.0',
-      accpectedTags: ['hello', 'world', 'branch'],
-      accpectedVersion: '1.0.0'
+      expectedTags: ['hello', 'world', 'branch'],
+      expectedVersion: '1.0.0',
     },
     {
       desc: 'is master, bumps minor version',
       branch: 'master',
       version: null,
-      accpectedTags: ['master'],
-      accpectedVersion: '1.1.0',
-
+      expectedTags: ['master'],
+      expectedVersion: '1.1.0',
+      scenario: 'broker-latest-pact', // how broker request is resolved
     },
     {
-      desc: 'is feature, bumps to rc-version',
+      desc: 'is feature, bumps rc-version',
       branch: 'feature',
-      accpectedTags: ['feature'],
-      accpectedVersion: '1.1.0-rc.0',
+      expectedTags: ['feature'],
+      expectedVersion: '1.1.0-rc.1',
+      scenario: 'broker-rc-pact',
+    },
+    {
+      desc: 'is feature with existent pact',
+      branch: 'feature',
+      expectedTags: ['feature'],
+      expectedVersion: '1.1.0-rc.0',
+      scenario: 'subsequent-requests-feature-master',
     }
   ].forEach((item) => {
     test(`branch name ${item.desc}`, (done) => {
-
+      if (item.scenario) {
+        global.MOCK_REQUEST_SCENARIO = item.scenario;
+        global.MOCK_REQUEST_TAG = item.branch;
+      }
       publish({
         PACT_FILE: pactFile,
         tags: item.tags,
@@ -95,12 +80,15 @@ describe('publish pacts to broker', () => {
           consumerVersion: item.version,
           pactBroker: config.brokerUrl,
           pactUrls: [pactFileFullPath],
-          tags: item.accpectedTags,
-          consumerVersion: item.accpectedVersion,
+          tags: item.expectedTags,
+          consumerVersion: item.expectedVersion,
         });
         done();
       });
     });
-  //
+  });
+
+  test('bumps to rc version if tag has no pact yet', () => {
+
   });
 });

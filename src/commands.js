@@ -69,12 +69,12 @@ export function publish(args) {
   }
 
   // set version from pact-broker if not given
-  if (args.version === null) {
+  if (!args.version) {
     const
       consumer = getParticipantFromPactfile(fullPactPath, 'consumer'),
       provider = getParticipantFromPactfile(fullPactPath, 'provider');
 
-    return getVersionForPact(consumer, provider, config.brokerUrl)
+    return getVersionForPact(consumer, provider, config.brokerUrl, args.branch)
       .then((version) => {
         Object.assign(opts, {
           consumerVersion: bumpVersion(version, args.branch)
@@ -82,6 +82,7 @@ export function publish(args) {
 
         return publishPacts(opts, args, config);
       }).catch((err) => {
+        log('Couldn\'t publish pacts. Publishpacts returned:');
         log(err);
       });
 

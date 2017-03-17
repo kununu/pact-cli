@@ -93,17 +93,18 @@ function publish(args) {
   }
 
   // set version from pact-broker if not given
-  if (args.version === null) {
+  if (!args.version) {
     var consumer = (0, _pactBrokerHelper.getParticipantFromPactfile)(fullPactPath, 'consumer'),
         provider = (0, _pactBrokerHelper.getParticipantFromPactfile)(fullPactPath, 'provider');
 
-    return (0, _pactBrokerHelper.getVersionForPact)(consumer, provider, config.brokerUrl).then(function (version) {
+    return (0, _pactBrokerHelper.getVersionForPact)(consumer, provider, config.brokerUrl, args.branch).then(function (version) {
       Object.assign(opts, {
         consumerVersion: (0, _helpers.bumpVersion)(version, args.branch)
       });
 
       return publishPacts(opts, args, config);
     }).catch(function (err) {
+      (0, _helpers.log)('Couldn\'t publish pacts. Publish pacts returned');
       (0, _helpers.log)(err);
     });
 
@@ -124,3 +125,7 @@ function publishPacts(opts, args, config) {
     return (0, _helpers.log)('Publish failed because of \n' + err);
   });
 }
+
+// function publishWithVersion(opts, args, config, () => {
+// console.
+// });
