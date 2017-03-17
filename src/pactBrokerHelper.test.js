@@ -3,6 +3,12 @@ import {getVersionForPact, getBrokerEndpoint, getParticipantFromPactfile} from '
 import {getConfig} from './helpers';
 
 describe('version handling based on pact', () => {
+
+  afterEach(() => {
+    delete global.MOCK_REQUEST_SCENARIO;
+    delete global.MOCK_REQUEST_TAG;
+  });
+
   test('get version for pact provider consumer latest pact', () => {
     // set mock scenario used by /__mocks__/request.js
     global.MOCK_REQUEST_SCENARIO = 'broker-latest-pact';
@@ -14,6 +20,18 @@ describe('version handling based on pact', () => {
     return getVersionForPact(consumer, provider, getConfig().brokerUrl)
       .then(version => expect(version).toBe(expectedVersion));
   });
+
+  test('get version for pact provider given feature tag', () => {
+    global.MOCK_REQUEST_SCENARIO = 'broker-latest-pact';
+    global.MOCK_REQUEST_TAG = 'master';
+    const
+    consumer = 'test-consumer',
+    provider = 'test-provider';
+
+    const expectedVersion = '1.0.0';
+    return getVersionForPact(consumer, provider, getConfig().brokerUrl, 'master')
+      .then(version => expect(version).toBe(expectedVersion));
+  });
 });
 
 describe('creation for pact-brokern endpoints', () => {
@@ -23,13 +41,23 @@ describe('creation for pact-brokern endpoints', () => {
     }).toThrow();
   });
 
-  test('get latest endpoint base on consumer and provider', () => {
+  test('get latest endpoint base for consumer and provider', () => {
     const options = {
       consumer: 'test-consumer',
       provider: 'test-provider',
     };
 
     expect(getBrokerEndpoint('consumer-provider', options)).toBe('pacts/provider/test-provider/consumer/test-consumer/latest');
+  });
+
+  test('get endpoint base for consumer, provider, and tag', () => {
+    const options = {
+      consumer: 'test-consumer',
+      provider: 'test-provider',
+      tag: 'master'
+    };
+
+    expect(getBrokerEndpoint('consumer-provider', options)).toBe('pacts/provider/test-provider/consumer/test-consumer/latest/master');
   });
 });
 

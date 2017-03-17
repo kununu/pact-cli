@@ -1,0 +1,142 @@
+{
+    "_links": {
+        "curies": [
+            {
+                "href": "http://broker_url:5000/doc/{rel}",
+                "name": "pb",
+                "templated": true
+            }
+        ],
+        "pb:consumer": {
+            "href": "http://broker_url:5000/pacticipants/test-consumer",
+            "name": "test-consumer",
+            "title": "Consumer"
+        },
+        "pb:diff-previous-distinct": {
+            "href": "http://broker_url:5000/pacts/provider/test-provider/consumer/test-consumer/version/1.1.0-rc.0/diff/previous-distinct",
+            "name": "Diff with previous distinct version of this pact",
+            "title": "Diff"
+        },
+        "pb:latest-pact-version": {
+            "href": "http://broker_url:5000/pacts/provider/test-provider/consumer/test-consumer/latest",
+            "name": "Latest version of this pact",
+            "title": "Pact"
+        },
+        "pb:pact-webhooks": {
+            "href": "http://broker_url:5000/webhooks/provider/test-provider/consumer/test-consumer",
+            "title": "Webhooks for the pact between test-consumer and test-provider"
+        },
+        "pb:previous-distinct": {
+            "href": "http://broker_url:5000/pacts/provider/test-provider/consumer/test-consumer/version/1.1.0-rc.0/previous-distinct",
+            "name": "Previous distinct version of this pact",
+            "title": "Pact"
+        },
+        "pb:provider": {
+            "href": "http://broker_url:5000/pacticipants/test-provider",
+            "name": "test-provider",
+            "title": "Provider"
+        },
+        "pb:tag-prod-version": {
+            "href": "http://broker_url:5000/pacticipants/test-consumer/versions/1.1.0-rc.0/tags/prod",
+            "title": "Tag this version as 'production'"
+        },
+        "pb:tag-version": {
+            "href": "http://broker_url:5000/pacticipants/test-consumer/versions/1.1.0-rc.0/tags/{tag}",
+            "title": "Tag version"
+        },
+        "self": {
+            "href": "http://broker_url:5000/pacts/provider/test-provider/consumer/test-consumer/version/1.1.0-rc.0",
+            "name": "Pact between test-consumer (v1.1.0-rc.0) and test-provider",
+            "title": "Pact"
+        }
+    },
+    "consumer": {
+        "name": "test-consumer"
+    },
+    "createdAt": "2017-03-08T13:10:56+00:00",
+    "interactions": [
+        {
+            "description": "a dummy request",
+            "provider_state": "a dummy state",
+            "request": {
+                "body": {
+                },
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "method": "POST",
+                "path": "/access-token"
+            },
+            "response": {
+                "body": {
+                },
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "matchingRules": {
+                    "$.body.access_token": {
+                        "match": "regex",
+                        "regex": "^[\\w-]+\\.[\\w-]+\\.[\\w-]+$"
+                    },
+                    "$.body.refresh_token": {
+                        "match": "regex",
+                        "regex": "^[\\w\\/+-]+$"
+                    }
+                },
+                "status": 200
+            }
+        },
+        {
+            "description": "A dummy request 2",
+            "provider_state": "Another dummy state",
+            "request": {
+                "body": {
+                },
+                "headers": {
+                },
+                "method": "POST",
+                "path": "/access-token"
+            },
+            "response": {
+                "headers": {},
+                "status": 401
+            }
+        },
+        {
+            "description": "Yet another dummy request",
+            "provider_state": "some state",
+            "request": {
+                "body": {
+                },
+                "headers": {
+                },
+                "method": "POST",
+                "path": "/access-token"
+            },
+            "response": {
+                "body": {
+                },
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "matchingRules": {
+                    "$.body.access_token": {
+                        "match": "regex",
+                        "regex": "^[\\w-]+\\.[\\w-]+\\.[\\w-]+$"
+                    },
+                    "$.body.refresh_token": {
+                        "match": "regex",
+                        "regex": "^[\\w\\/+-]+$"
+                    }
+                },
+                "status": 200
+            }
+        }
+    ],
+    "metadata": {
+        "pactSpecificationVersion": "3.0.0"
+    },
+    "provider": {
+        "name": "test-provider"
+    }
+}
