@@ -3,7 +3,7 @@ import {die, getConfig, readJSON, writeJSON, log, bumpVersion} from './helpers';
 import pact from '@pact-foundation/pact-node';
 import path from 'path';
 import validUrl from 'valid-url';
-import {getVersionForPact, getParticipantFromPactfile} from './pactBrokerHelper';
+import {getVersionForPact, getParticipantFromPactfile, getPactForTag} from './pactBrokerHelper';
 
 export function verify(args) {
   const config = getConfig();
@@ -74,8 +74,9 @@ export function publish(args) {
       consumer = getParticipantFromPactfile(fullPactPath, 'consumer'),
       provider = getParticipantFromPactfile(fullPactPath, 'provider');
 
-    return getVersionForPact(consumer, provider, config.brokerUrl, args.branch)
-      .then((version) => {
+    return getVersionForPact(
+        getPactForTag(consumer, provider, config.brokerUrl, args.branch)
+      ).then((version) => {
         Object.assign(opts, {
           consumerVersion: bumpVersion(version, args.branch)
         });
@@ -86,7 +87,6 @@ export function publish(args) {
         log(err);
       });
 
-      return;
   }
 
   return publishPacts(opts, args, config);

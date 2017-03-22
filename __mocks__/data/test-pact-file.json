@@ -6,25 +6,83 @@
     "name": "test-provider"
   },
   "interactions": [
-    {
-      "description": "dummy request",
-      "provider_state": "dummy state",
-      "request": {
-        "method": "POST",
-        "path": "/test",
-        "headers": {
-        },
-        "body": {
-        }
+      {
+          "description": "a dummy request",
+          "provider_state": "a dummy state",
+          "request": {
+              "body": {
+              },
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "method": "POST",
+              "path": "/access-token"
+          },
+          "response": {
+              "body": {
+              },
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "matchingRules": {
+                  "$.body.access_token": {
+                      "match": "regex",
+                      "regex": "^[\\w-]+\\.[\\w-]+\\.[\\w-]+$"
+                  },
+                  "$.body.refresh_token": {
+                      "match": "regex",
+                      "regex": "^[\\w\\/+-]+$"
+                  }
+              },
+              "status": 200
+          }
       },
-      "response": {
-        "status": 200,
-        "headers": {
-        },
-        "body": {
-        }
+      {
+          "description": "A dummy request 2",
+          "provider_state": "Another dummy state",
+          "request": {
+              "body": {
+              },
+              "headers": {
+              },
+              "method": "POST",
+              "path": "/access-token"
+          },
+          "response": {
+              "headers": {},
+              "status": 401
+          }
+      },
+      {
+          "description": "Yet another dummy request",
+          "provider_state": "some state",
+          "request": {
+              "body": {
+              },
+              "headers": {
+              },
+              "method": "POST",
+              "path": "/access-token"
+          },
+          "response": {
+              "body": {
+              },
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "matchingRules": {
+                  "$.body.access_token": {
+                      "match": "regex",
+                      "regex": "^[\\w-]+\\.[\\w-]+\\.[\\w-]+$"
+                  },
+                  "$.body.refresh_token": {
+                      "match": "regex",
+                      "regex": "^[\\w\\/+-]+$"
+                  }
+              },
+              "status": 200
+          }
       }
-    }
   ],
   "metadata": {
     "pactSpecificationVersion": "3.0.0"

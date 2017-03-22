@@ -4,7 +4,7 @@ import path from 'path';
 const request = require('request-promise');
 const defaultTag = 'master';
 
-export function getVersionForPact(consumer, provider, brokerUrl, tag) {
+export function getPactForTag(consumer, provider, brokerUrl, tag, retryMaster = false) {
   const brokerEndpoint = getBrokerEndpoint(
     'consumer-provider',
     {
@@ -14,20 +14,34 @@ export function getVersionForPact(consumer, provider, brokerUrl, tag) {
     }
   );
 
-  return requestUrlFromBroker({
+  const promise = requestUrlFromBroker({
     uri: `${brokerUrl}/${brokerEndpoint}`,
     json: true
-  }).then((response) => {
+  });
+
+  if (retryMaster) {
+    return promise
+      .then((response) => {
+        return response;
+      }).catch((err) => {
+        if (tag !==  defaultTag && err.statusCode && 404 === err.statusCode) {
+          return getPactForTag(consumer, provider, brokerUrl, 'master');
+        }
+        // if none 404 propagate error
+        throw err;
+    });
+  }
+
+  return promise;
+}
+
+export function getVersionForPact(promiseFetchingPact) {
+
+  return promiseFetchingPact.then((response) => {
     // return the current latest version
     return path.basename(
       url.parse(response._links.self.href).pathname
     );
-  }).catch((err) => {
-    if (defaultTag !==  tag && err.statusCode && 404 === err.statusCode) {
-      return getVersionForPact(consumer, provider, brokerUrl, 'master');
-    }
-    // if none 404 propagate erro
-    throw err;
   });
 }
 
