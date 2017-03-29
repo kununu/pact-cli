@@ -1,2 +1,5 @@
-# pact is platform dependent
 node_modules/
+dist/
+coverage/
+Dockerfile
+.DS_Store
