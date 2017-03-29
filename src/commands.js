@@ -95,7 +95,7 @@ export function publish (args) {
 }
 
 function publishPacts(opts, args, config) {
-  return pact.publishPacts(opts).then((pact) => {
+  return pact.publishPacts(opts).then((pactObject) => {
     log('=================================================================================');
     log(`Pact ${args.PACT_FILE} Published on ${config.brokerUrl}`);
     log('=================================================================================');
