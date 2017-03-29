@@ -8,8 +8,8 @@ WORKDIR /home/node
 RUN apt-get update -qq \
     && apt-get install -y psmisc
 
-COPY dist/ /home/node/dist
-COPY package.json /home/node
+COPY . /home/node
 
-RUN npm install \
-  && npm link
+RUN npm install
+RUN npm run build
+RUN npm link
