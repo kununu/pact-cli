@@ -1,10 +1,10 @@
-import fs from 'fs';
-import {die, getConfig, readJSON, writeJSON, log, bumpVersion} from './helpers';
-import pact from '@pact-foundation/pact-node';
-
 import path from 'path';
 
+import pact from '@pact-foundation/pact-node';
+
 import validUrl from 'valid-url';
+
+import {getConfig, log, bumpVersion} from './helpers';
 import {getVersionForPact, getParticipantFromPactfile} from './pactBrokerHelper';
 
 export function verify (args) {
@@ -34,15 +34,24 @@ export function verify (args) {
   }, (err) => log(`Verify failed because of \n${err}`));
 }
 
+function publishPacts (opts, args, config) {
+  return pact.publishPacts(opts).then((pactObject) => {
+    log('=================================================================================');
+    log(`Pact ${args.PACT_FILE} Published on ${config.brokerUrl}`);
+    log('=================================================================================');
+    log(JSON.stringify(pactObject, null, 2));
+    log('=================================================================================');
+  }, (err) => log(`Publish failed because of \n${err}`));
+}
+
 export function publish (args) {
-  const
-    config = getConfig(),
-    fullPactPath = path.resolve(process.cwd(), args.PACT_FILE),
-    opts = {
-      pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
-      pactBroker: config.brokerUrl,
-      consumerVersion: args.version
-    };
+  const config = getConfig();
+  const fullPactPath = path.resolve(process.cwd(), args.PACT_FILE);
+  const opts = {
+    pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
+    pactBroker: config.brokerUrl,
+    consumerVersion: args.version,
+  };
 
   if (args.tags) {
     Object.assign(opts, {
@@ -52,14 +61,14 @@ export function publish (args) {
 
   if (!opts.tags) {
     Object.assign(opts, {
-      tags: []
+      tags: [],
     });
   }
 
   if (args.branch) {
     opts.tags.push(args.branch);
     Object.assign(opts, {
-      tags: opts.tags
+      tags: opts.tags,
     });
   }
 
@@ -72,14 +81,13 @@ export function publish (args) {
 
   // set version from pact-broker if not given
   if (!args.version) {
-    const
-      consumer = getParticipantFromPactfile(fullPactPath, 'consumer'),
-      provider = getParticipantFromPactfile(fullPactPath, 'provider');
+    const consumer = getParticipantFromPactfile(fullPactPath, 'consumer');
+    const provider = getParticipantFromPactfile(fullPactPath, 'provider');
 
     return getVersionForPact(consumer, provider, config.brokerUrl, args.branch)
       .then((version) => {
         Object.assign(opts, {
-          consumerVersion: bumpVersion(version, args.branch)
+          consumerVersion: bumpVersion(version, args.branch),
         });
 
         return publishPacts(opts, args, config);
@@ -87,19 +95,7 @@ export function publish (args) {
         log('Couldn\'t publish pacts. Publishpacts returned:');
         log(err);
       });
-
-      return;
   }
 
   return publishPacts(opts, args, config);
-}
-
-function publishPacts(opts, args, config) {
-  return pact.publishPacts(opts).then((pactObject) => {
-    log('=================================================================================');
-    log(`Pact ${args.PACT_FILE} Published on ${config.brokerUrl}`);
-    log('=================================================================================');
-    log(JSON.stringify(pactObject, null, 2));
-    log('=================================================================================');
-  }, (err) => log(`Publish failed because of \n${err}`));
 }

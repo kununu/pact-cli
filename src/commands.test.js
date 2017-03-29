@@ -1,25 +1,24 @@
 import path from 'path';
 
-import {publish} from './commands';
 import {publishPacts} from '@pact-foundation/pact-node';
+
+import {publish} from './commands';
 import {getConfig} from './__mocks__/helpers';
 
 jest.mock('@pact-foundation/pact-node', () => ({
-  publishPacts: jest.fn((opts, args, config) => new Promise((resolve, reject) => {
+  publishPacts: jest.fn(() => new Promise((resolve) => {
     resolve('test pact');
-  }))
+  })),
 }));
 
 jest.mock('./helpers');
 
 describe('publish pacts to broker', () => {
   // variables need for publish call
-  const
-    config = getConfig(),
-    // process used for path resolving is in base test dir
-    pactFile = './__mocks__/data/test-pact-file.json',
-    pactFileFullPath = path.resolve(process.cwd(), pactFile)
-  ;
+  const config = getConfig();
+  // process used for path resolving is in base test dir
+  const pactFile = './__mocks__/data/test-pact-file.json';
+  const pactFileFullPath = path.resolve(process.cwd(), pactFile);
 
   beforeEach(() => {
     publishPacts.mockClear();
@@ -61,7 +60,7 @@ describe('publish pacts to broker', () => {
       expectedTags: ['feature'],
       expectedVersion: '1.1.0-rc.0',
       scenario: 'subsequent-requests-feature-master',
-    }
+    },
   ].forEach((item) => {
     test(`branch name ${item.desc}`, (done) => {
       if (item.scenario) {
@@ -74,10 +73,8 @@ describe('publish pacts to broker', () => {
         branch: item.branch,
         version: item.version,
       }).then(() => {
-
         expect(publishPacts).toHaveBeenCalled();
         expect(publishPacts.mock.calls[0][0]).toMatchObject({
-          consumerVersion: item.version,
           pactBroker: config.brokerUrl,
           pactUrls: [pactFileFullPath],
           tags: item.expectedTags,

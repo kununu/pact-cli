@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-const semver = require('semver');
 
 import {ArgumentParser} from 'argparse';
+
+const semver = require('semver');
 
 export function die (msg, code = 1) {
   process.stderr.write(`${msg}\n`);
@@ -107,7 +108,7 @@ export function getParsedArgs (pkgContents) {
 
   cmdPublish.addArgument(['-b', '--branch'], {
     action: 'store',
-    help: 'branch-name will be added to tags and version bumped accordingly'
+    help: 'branch-name will be added to tags and version bumped accordingly',
   });
 
   cmdPublish.addArgument(['PACT_FILE'], {
@@ -146,15 +147,14 @@ export function writeJSON (obj, filePath) {
   }
 }
 
-export function bumpVersion(version, branch) {
-
+export function bumpVersion (version, branch) {
   if (branch === 'master') {
     return semver.inc(version, 'minor');
   }
 
   // branch given but not master = feature-branch
   // but no prerelase
-  if (branch && null === semver.prerelease(version)) {
+  if (branch && semver.prerelease(version) === null) {
     return semver.inc(version, 'preminor', 'rc');
   }
 
@@ -164,5 +164,4 @@ export function bumpVersion(version, branch) {
 
   // default to patch increment
   return semver.inc(version, 'patch');
-
 }
