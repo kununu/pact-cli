@@ -1,6 +1,22 @@
-import {ArgumentParser} from 'argparse';
 import fs from 'fs';
 import path from 'path';
+
+import {ArgumentParser} from 'argparse';
+
+export function die (msg, code = 1) {
+  process.stderr.write(`${msg}\n`);
+  process.exit(code);
+}
+
+export function readJSON (filePath) {
+  if (!fs.existsSync(filePath)) { die(`File ${filePath} does not exist`); }
+
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch (err) {
+    return die(`Malformed JSON in ${filePath} \n${err}`);
+  }
+}
 
 export function getConfig () {
   const HOME = process.env.HOME || process.env.USERPROFILE;
@@ -15,14 +31,8 @@ export function log (msg) {
   process.stdout.write(`${msg}\n`);
 }
 
-export function die (msg, code = 1) {
-  process.stderr.write(`${msg}\n`);
-  process.exit(code);
-}
-
 export function getParsedArgs (pkgContents) {
   const DEFAULT_SERVERFILE = './servers.json';
-  const DEFAULT_DAEMON = false;
 
   const parser = new ArgumentParser({
     version: pkgContents.version,
@@ -37,7 +47,6 @@ export function getParsedArgs (pkgContents) {
 
   const cmdServer = subparsers.addParser('server', {addHelp: true});
   const cmdNew = subparsers.addParser('new', {addHelp: true});
-  const cmdConfig = subparsers.addParser('config', {addHelp: true});
   const cmdPublish = subparsers.addParser('publish', {addHelp: true});
   const cmdVerify = subparsers.addParser('verify', {addHelp: true});
 
@@ -124,20 +133,10 @@ export function getParsedArgs (pkgContents) {
   return parser.parseArgs();
 }
 
-export function writeJSON (obj, path) {
+export function writeJSON (obj, filePath) {
   try {
-    fs.writeFileSync(path, JSON.stringify(obj, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(obj, null, 2));
   } catch (err) {
     die(`Error while saving JSON File: \n${err}`);
-  }
-}
-
-export function readJSON (path) {
-  if (!fs.existsSync(path)) { die(`File ${path} does not exist`); }
-
-  try {
-    return JSON.parse(fs.readFileSync(path, 'utf-8'));
-  } catch (err) {
-    die(`Malformed JSON in ${path} \n${err}`);
   }
 }

@@ -1,8 +1,10 @@
-import fs from 'fs';
-import {die, getConfig, readJSON, writeJSON, log} from './helpers';
 import pact from '@pact-foundation/pact-node';
+
 import path from 'path';
+
 import validUrl from 'valid-url';
+
+import {getConfig, log} from './helpers';
 
 export function verify (args) {
   const config = getConfig();
@@ -22,11 +24,11 @@ export function verify (args) {
     });
   }
 
-  pact.verifyPacts(opts).then((pact) => {
+  pact.verifyPacts(opts).then((pactObject) => {
     log('=================================================================================');
     log(`Pact ${args.PACT_FILE} verified with following result`);
     log('=================================================================================');
-    log(JSON.stringify(pact, null, 2));
+    log(JSON.stringify(pactObject, null, 2));
     log('=================================================================================');
   }, (err) => log(`Verify failed because of \n${err}`));
 }
@@ -53,11 +55,11 @@ export function publish (args) {
     });
   }
 
-  pact.publishPacts(opts).then((pact) => {
+  pact.publishPacts(opts).then((pactObject) => {
     log('=================================================================================');
     log(`Pact ${args.PACT_FILE} Published on ${config.brokerUrl}`);
     log('=================================================================================');
-    log(JSON.stringify(pact, null, 2));
+    log(JSON.stringify(pactObject, null, 2));
     log('=================================================================================');
   }, (err) => log(`Publish failed because of \n${err}`));
 }

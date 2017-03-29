@@ -1,7 +1,8 @@
 #! /usr/bin/env node
 
 import path from 'path';
-import {die, getParsedArgs, readJSON} from './helpers';
+
+import {getParsedArgs, readJSON, log} from './helpers';
 import setupServers, {getInteractionsPromise} from './setupServers';
 import {serverWizard, interactionWizard, brokerConfigWizard} from './wizards';
 import {publish, verify} from './commands';
@@ -15,7 +16,7 @@ switch (args.subcommand_name) {
       const servers = readJSON(args.file);
       getInteractionsPromise(args).then((interactions) => {
         setupServers(args, servers, interactions);
-      }, (err) => { console.log(err); });
+      }, (err) => { log(err); });
     } else if (args.CHOICE === 'add') {
       serverWizard(args.file);
     }
@@ -36,5 +37,8 @@ switch (args.subcommand_name) {
   case 'verify':
     verify(args);
     break;
+
+  default:
+    log('Unkown option');
 
 }

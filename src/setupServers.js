@@ -1,10 +1,13 @@
-import Pact from 'pact';
-import wrapper from '@pact-foundation/pact-node';
-import glob from 'glob';
-import {log, readJSON} from './helpers';
 import path from 'path';
 
-export function getInteractionsPromise (args) {
+import Pact from 'pact';
+import glob from 'glob';
+
+import wrapper from '@pact-foundation/pact-node';
+
+import {log, readJSON} from './helpers';
+
+export function getInteractionsPromise () {
   return new Promise((resolve, reject) => {
     log('Searching for interaction files ...');
 
@@ -19,7 +22,7 @@ export function getInteractionsPromise (args) {
 
           case '.js':
             interactions.push(
-              require(`${process.cwd()}/${file}`)(Pact.Matchers),
+              require(`${process.cwd()}/${file}`)(Pact.Matchers), // eslint-disable-line
             );
             break;
 
@@ -28,6 +31,9 @@ export function getInteractionsPromise (args) {
               readJSON(file),
             );
             break;
+
+          default:
+            log(`non interactionfile: ${file}`);
         }
       });
       resolve(interactions);
@@ -38,14 +44,14 @@ export function getInteractionsPromise (args) {
 export default function setupServers (args, servers, interactions) {
   if (args.daemon) {
     log('Start Daemon');
-    require('daemon')();
+    require('daemon')(); // eslint-disable-line
   }
 
   log('Startup Servers ...');
 
   servers.forEach((specs) => {
-    const filteredInteractions = interactions.filter((interaction) => specs.consumer == interaction.consumer &&
-        specs.provider == interaction.provider);
+    const filteredInteractions = interactions.filter((interaction) => specs.consumer === interaction.consumer &&
+        specs.provider === interaction.provider);
 
     if (filteredInteractions.length > 0) {
       const mockserver = wrapper.createServer({

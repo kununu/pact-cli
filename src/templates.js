@@ -1,3 +1,4 @@
+/*eslint-disable */
 export function makeInteraction (data, interactionType) {
   switch (interactionType) {
     case 'js':

@@ -1,9 +1,9 @@
 import fs from 'fs';
-import prompt from 'prompt';
-import {die, getConfig, readJSON, writeJSON, log} from './helpers';
-import pact from '@pact-foundation/pact-node';
-import path from 'path';
 import {exec} from 'child_process';
+
+import prompt from 'prompt';
+
+import {die, readJSON, writeJSON, log} from './helpers';
 import {makeInteraction} from './templates';
 
 export function serverWizard (file) {
@@ -104,12 +104,12 @@ export function interactionWizard (args) {
         },
       },
       consumer: {
-        pattern: /^[a-zA-Z\-]+$/,
+        pattern: /^[a-zA-Z-]+$/,
         message: 'Consumer ID must be only letters and dashes',
         default: `${suggestions.consumer}`,
       },
       provider: {
-        pattern: /^[a-zA-Z\-]+$/,
+        pattern: /^[a-zA-Z-]+$/,
         message: 'Provider ID must be only letters and dashes',
         default: `${suggestions.provider}`,
       },
@@ -127,7 +127,7 @@ export function interactionWizard (args) {
         default: 'GET',
       },
       path: {
-        pattern: /^[a-zA-Z0-9\-\/:]+$/,
+        pattern: /^[a-zA-Z0-9\-\/:]+$/, // eslint-disable-line
         required: true,
         default: '/',
       },
