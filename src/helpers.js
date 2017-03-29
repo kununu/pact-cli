@@ -146,7 +146,7 @@ export function writeJSON (obj, filePath) {
   }
 }
 
-export function bumpVersion(version) {
+export function bumpVersion(version, branch) {
 
   if (branch === 'master') {
     return semver.inc(version, 'minor');
