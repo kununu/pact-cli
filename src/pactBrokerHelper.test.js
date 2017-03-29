@@ -1,7 +1,7 @@
 import path from 'path';
 
 import {getVersionForPact, getBrokerEndpoint, getParticipantFromPactfile} from './pactBrokerHelper';
-import {getConfig} from './helpers';
+import {getConfig} from './__mocks__/helpers';
 
 describe('version handling based on pact', () => {
   const consumer = 'test-consumer';
