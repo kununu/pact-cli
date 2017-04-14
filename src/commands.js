@@ -60,9 +60,7 @@ export function publish (args) {
   }
 
   if (!opts.tags) {
-    Object.assign(opts, {
-      tags: [],
-    });
+    opts.tags = [];
   }
 
   if (args.branch) {
