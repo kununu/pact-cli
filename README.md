@@ -48,7 +48,7 @@ A CLI Tool to start a API mock server via pact interaction files.
     - `-b | --branch branch-name`
   - will publish the given pact to the configured broker
     - the given branch will be added to the branch list
-    - if no version is given it will try to get the version from the pact broker and bump it (minor or buildnumber if prerelase):
+    - if no version is given it will try to get the version from the pact broker and bump it (minor or build number if prerelase):
       - if no branch is given it fetches from latest,
       - if branch is given it fetches the latest consumer/provider/pact and bumps it's version
       - if branch is given and not master, but tag doesn't yet exists on broker. It get's the tag from master and bumps it to the next prerelase-minor-version.
