@@ -1,13 +1,15 @@
 {
   "name": "pact-cli",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "CLI Tool to start an API Mock Server via PACT interaction Files and communicating with PACT Brokers",
   "main": "dist/index.js",
   "bin": {
     "pact-cli": "dist/cli.js"
   },
   "scripts": {
-    "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist",
+    "test": "jest --watch --silent=false",
+    "test-ci": "jest",
+    "build": "mkdir -p dist && ./node_modules/.bin/babel ./src -d dist --ignore test.js,__mocks__",
     "dev": "./node_modules/.bin/watch -p \"src/*.js\" -c \"npm run build && npm link\"",
     "lint": "eslint src",
     "lint-fix": "eslint --fix src"
@@ -39,10 +41,15 @@
   "dependencies": {
     "@pact-foundation/pact-node": "4.6.0",
     "argparse": "1.0.9",
+    "babel-jest": "^19.0.0",
     "daemon": "^1.1.0",
     "glob": "7.1.1",
+    "jest": "^19.0.2",
     "pact": "1.0.0-rc.5",
     "prompt": "1.0.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.1.1",
+    "semver": "^5.3.0",
     "valid-url": "^1.0.9"
   }
 }

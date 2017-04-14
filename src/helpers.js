@@ -3,6 +3,8 @@ import path from 'path';
 
 import {ArgumentParser} from 'argparse';
 
+const semver = require('semver');
+
 export function die (msg, code = 1) {
   process.stderr.write(`${msg}\n`);
   process.exit(code);
@@ -96,13 +98,17 @@ export function getParsedArgs (pkgContents) {
 
   cmdPublish.addArgument(['-v', '--version'], {
     action: 'store',
-    help: 'Version Number (required)',
-    required: true,
+    help: 'Version Number',
   });
 
   cmdPublish.addArgument(['-t', '--tags'], {
     action: 'store',
     help: 'Comma seperated Taglist',
+  });
+
+  cmdPublish.addArgument(['-b', '--branch'], {
+    action: 'store',
+    help: 'branch-name will be added to tags and version bumped accordingly',
   });
 
   cmdPublish.addArgument(['PACT_FILE'], {
@@ -139,4 +145,23 @@ export function writeJSON (obj, filePath) {
   } catch (err) {
     die(`Error while saving JSON File: \n${err}`);
   }
+}
+
+export function bumpVersion (version, branch) {
+  if (branch === 'master') {
+    return semver.inc(version, 'minor');
+  }
+
+  // branch given but not master = feature-branch
+  // but no prerelase
+  if (branch && semver.prerelease(version) === null) {
+    return semver.inc(version, 'preminor', 'rc');
+  }
+
+  if (branch) {
+    return semver.inc(version, 'pre');
+  }
+
+  // default to patch increment
+  return semver.inc(version, 'patch');
 }
