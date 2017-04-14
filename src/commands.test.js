@@ -5,6 +5,8 @@ import {publishPacts} from '@pact-foundation/pact-node';
 import {publish} from './commands';
 import {getConfig} from './__mocks__/helpers';
 
+const requestPromise = require('request-promise');
+
 jest.mock('@pact-foundation/pact-node', () => ({
   publishPacts: jest.fn(() => new Promise((resolve) => {
     resolve('test pact');
@@ -25,8 +27,7 @@ describe('publish pacts to broker', () => {
   });
 
   afterEach(() => {
-    delete global.MOCK_REQUEST_SCENARIO;
-    delete global.MOCK_REQUEST_TAG;
+    requestPromise.unsetScenario();
   });
 
   // different scenarios to test against
@@ -64,8 +65,9 @@ describe('publish pacts to broker', () => {
   ].forEach((item) => {
     test(`branch name ${item.desc}`, (done) => {
       if (item.scenario) {
-        global.MOCK_REQUEST_SCENARIO = item.scenario;
-        global.MOCK_REQUEST_TAG = item.branch;
+        requestPromise.setScenario(item.scenario, item.branch);
+        // global.MOCK_REQUEST_SCENARIO = item.scenario;
+        // global.MOCK_REQUEST_TAG = item.branch;
       }
       publish({
         PACT_FILE: pactFile,
@@ -83,9 +85,5 @@ describe('publish pacts to broker', () => {
         done();
       });
     });
-  });
-
-  test('bumps to rc version if tag has no pact yet', () => {
-
   });
 });

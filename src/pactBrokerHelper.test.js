@@ -3,18 +3,19 @@ import path from 'path';
 import {getVersionForPact, getBrokerEndpoint, getParticipantFromPactfile} from './pactBrokerHelper';
 import {getConfig} from './__mocks__/helpers';
 
+const requestPromise = require('request-promise');
+
 describe('version handling based on pact', () => {
   const consumer = 'test-consumer';
   const provider = 'test-provider';
 
   afterEach(() => {
-    delete global.MOCK_REQUEST_SCENARIO;
-    delete global.MOCK_REQUEST_TAG;
+    requestPromise.unsetScenario();
   });
 
   test('get version for pact provider consumer latest pact', () => {
     // set mock scenario used by /__mocks__/request.js
-    global.MOCK_REQUEST_SCENARIO = 'broker-latest-pact';
+    requestPromise.setScenario('broker-latest-pact');
 
     const expectedVersion = '1.0.0';
     return getVersionForPact(consumer, provider, getConfig().brokerUrl)
@@ -22,8 +23,7 @@ describe('version handling based on pact', () => {
   });
 
   test('get version for pact provider given feature tag', () => {
-    global.MOCK_REQUEST_SCENARIO = 'broker-latest-pact';
-    global.MOCK_REQUEST_TAG = 'master';
+    requestPromise.setScenario('broker-latest-pact', 'master');
 
     const expectedVersion = '1.0.0';
     return getVersionForPact(consumer, provider, getConfig().brokerUrl, 'master')
