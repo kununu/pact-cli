@@ -59,6 +59,9 @@ export default function setupServers (args, servers, interactions) {
         log: args.log_path,
         dir: args.contract_dir,
         spec: specs.spec,
+        ssl: specs.ssl,
+        sslcert: specs.sslcert,
+        sslkey: specs.sslkey,
         consumer: specs.consumer,
         provider: specs.provider,
         host: specs.host,
@@ -72,6 +75,7 @@ export default function setupServers (args, servers, interactions) {
             consumer: interaction.consumer,
             provider: interaction.provider,
             port: specs.port,
+            ssl: specs.ssl,
           });
           const url = `(${interaction.interaction.withRequest.method}) http://localhost:${specs.port}${interaction.interaction.withRequest.path}`;
           log(`Add Interaction "${interaction.interaction.state}" on ${url}`);

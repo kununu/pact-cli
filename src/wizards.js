@@ -36,6 +36,21 @@ export function serverWizard (file) {
         message: 'Host the server listens to, defaults to 0.0.0.0 (insecure, only for internal nats)',
         default: '0.0.0.0',
       },
+      ssl: {
+        message: 'Whether to use https for mock servers',
+        default: false,
+        type: 'boolean',
+      },
+      sslcert: {
+        message: 'Do you want to use your own cert?',
+        default: false,
+        ask: () => prompt.history('ssl').value,
+      },
+      sslkey: {
+        message: 'What key do you want to use?',
+        required: true,
+        ask: () => prompt.history('ssl').value && prompt.history('sslcert').value,
+      },
       spec: {
         message: 'The pact specification version to use when writing pact contracts',
         default: 3,
