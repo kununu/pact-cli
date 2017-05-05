@@ -53,6 +53,14 @@ export default function setupServers (args, servers, interactions) {
     const filteredInteractions = interactions.filter((interaction) => specs.consumer === interaction.consumer &&
         specs.provider === interaction.provider);
 
+    let sslkey = false;
+    let sslcert = false;
+
+    if (specs.sslcert && specs.sslkey) {
+      sslkey = path.resolve(process.cwd(), specs.sslkey);
+      sslcert = path.resolve(process.cwd(), specs.sslcert);
+    }
+
     if (filteredInteractions.length > 0) {
       const mockserver = wrapper.createServer({
         port: specs.port,
@@ -60,8 +68,8 @@ export default function setupServers (args, servers, interactions) {
         dir: args.contract_dir,
         spec: specs.spec,
         ssl: specs.ssl,
-        sslcert: specs.sslcert,
-        sslkey: specs.sslkey,
+        sslcert,
+        sslkey,
         consumer: specs.consumer,
         provider: specs.provider,
         host: specs.host,
