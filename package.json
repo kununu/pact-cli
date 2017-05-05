@@ -39,7 +39,7 @@
     "watch-cli": "0.2.1"
   },
   "dependencies": {
-    "@pact-foundation/pact-node": "4.6.0",
+    "@pact-foundation/pact-node": "4.8.3",
     "argparse": "1.0.9",
     "babel-jest": "^19.0.0",
     "daemon": "^1.1.0",
