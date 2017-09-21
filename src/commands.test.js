@@ -62,6 +62,20 @@ describe('publish pacts to broker', () => {
       expectedVersion: '1.1.0-rc.0',
       scenario: 'subsequent-requests-feature-master',
     },
+    {
+      desc: 'new master-pact without a branch on master',
+      branch: 'feature',
+      expectedTags: ['feature'],
+      expectedVersion: '1.1.0-rc.0',
+      scenario: '404',
+    },
+    {
+      desc: 'new master-pact without a branch on master',
+      branch: 'master',
+      expectedTags: ['master'],
+      expectedVersion: '1.1.0',
+      scenario: '404',
+    },
   ].forEach((item) => {
     test(`branch name ${item.desc}`, (done) => {
       if (item.scenario) {
