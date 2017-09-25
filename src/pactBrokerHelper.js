@@ -41,7 +41,11 @@ export function getVersionForPact (consumer, provider, brokerUrl, tag) {
       if (defaultTag !== tag && err.statusCode && err.statusCode === 404) {
         return getVersionForPact(consumer, provider, brokerUrl, 'master');
       }
-    // if none 404 propagate erro
+
+      if (err.statusCode && err.statusCode === 404) {
+        return '1.0.0';
+      }
+      // if not 404 propagate erro
       throw err;
     });
 }

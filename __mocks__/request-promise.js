@@ -40,6 +40,12 @@ function request (url) {
           statusCode: 404,
         });
       });
+    case '404':
+      return new Promise((resolve, reject) => {
+        reject({
+          statusCode: 404,
+        });
+      });
     default:
       throw new Error('undefined scenario');
   }
