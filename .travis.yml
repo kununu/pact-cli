@@ -9,5 +9,5 @@ cache:
 install:
   - time npm install
 script:
-  - time yarn lint
-  - time yarn run test-ci
+  - time npm run lint
+  - time npm run test-ci
