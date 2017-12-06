@@ -92,7 +92,7 @@ describe('publish pacts to broker', () => {
         expect(publishPacts).toHaveBeenCalled();
         expect(publishPacts.mock.calls[0][0]).toMatchObject({
           pactBroker: config.brokerUrl,
-          pactUrls: [pactFileFullPath],
+          pactFilesOrDirs: [pactFileFullPath],
           tags: item.expectedTags,
           consumerVersion: item.expectedVersion,
         });
