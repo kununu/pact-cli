@@ -1,7 +1,6 @@
 import path from 'path';
 
 import pact from '@pact-foundation/pact-node';
-
 import validUrl from 'valid-url';
 
 import {getConfig, log, bumpVersion} from './helpers';

@@ -2,7 +2,6 @@ import path from 'path';
 
 import Pact from 'pact';
 import glob from 'glob';
-
 import wrapper from '@pact-foundation/pact-node';
 
 import {log, readJSON} from './helpers';
@@ -19,7 +18,6 @@ export function getInteractionsPromise () {
 
       files.forEach((file) => {
         switch (path.extname(file)) {
-
           case '.js':
             interactions.push(
               require(`${process.cwd()}/${file}`)(Pact.Matchers), // eslint-disable-line

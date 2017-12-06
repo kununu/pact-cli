@@ -33,21 +33,21 @@ export function getVersionForPact (consumer, provider, brokerUrl, tag) {
   return requestUrlFromBroker({
     uri: `${brokerUrl}/${brokerEndpoint}`,
     json: true,
-  }).then((response) =>
+  }).then((response) => {
     // return the current latest version
-     path.basename(
-      url.parse(response._links.self.href).pathname, // eslint-disable-line
-    )).catch((err) => {
-      if (defaultTag !== tag && err.statusCode && err.statusCode === 404) {
-        return getVersionForPact(consumer, provider, brokerUrl, 'master');
-      }
+    const currVersion = url.parse(response._links.self.href).pathname; // eslint-disable-line
+    return path.basename(currVersion);
+  }).catch((err) => {
+    if (defaultTag !== tag && err.statusCode && err.statusCode === 404) {
+      return getVersionForPact(consumer, provider, brokerUrl, 'master');
+    }
 
-      if (err.statusCode && err.statusCode === 404) {
-        return '1.0.0';
-      }
-      // if not 404 propagate erro
-      throw err;
-    });
+    if (err.statusCode && err.statusCode === 404) {
+      return '1.0.0';
+    }
+    // if not 404 propagate erro
+    throw err;
+  });
 }
 
 
