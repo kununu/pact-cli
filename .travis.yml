@@ -6,10 +6,8 @@ cache:
     - $HOME/.npm
     - node_modules
   yarn: true
-before_install:
-  - time npm i -g yarn --cache-min 999999999
 install:
-  - time yarn
+  - time npm install
 script:
-  - time yarn lint
-  - time yarn run test-ci
+  - time npm run lint
+  - time npm run test-ci

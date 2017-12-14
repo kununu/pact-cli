@@ -1,7 +1,6 @@
 import path from 'path';
 
 import pact from '@pact-foundation/pact-node';
-
 import validUrl from 'valid-url';
 
 import {getConfig, log, bumpVersion} from './helpers';
@@ -48,7 +47,7 @@ export function publish (args) {
   const config = getConfig();
   const fullPactPath = path.resolve(process.cwd(), args.PACT_FILE);
   const opts = {
-    pactUrls: [path.resolve(process.cwd(), args.PACT_FILE)],
+    pactFilesOrDirs: [path.resolve(process.cwd(), args.PACT_FILE)],
     pactBroker: config.brokerUrl,
     consumerVersion: args.version,
   };

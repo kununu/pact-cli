@@ -40,5 +40,4 @@ switch (args.subcommand_name) {
 
   default:
     log('Unkown option');
-
 }
