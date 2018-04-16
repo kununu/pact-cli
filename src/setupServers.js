@@ -2,6 +2,7 @@ import path from 'path';
 
 import Pact from 'pact';
 import glob from 'glob';
+
 import wrapper from '@pact-foundation/pact-node';
 
 import {log, readJSON} from './helpers';
@@ -11,12 +12,21 @@ export function getInteractionsPromise () {
     log('Searching for interaction files ...');
 
     const interactions = [];
-    glob('**/*.interaction.+(json|js)', {ignore: 'node_modules/'}, (err, files) => {
+    glob('**/*.+(interaction|interactions).+(json|js)', {ignore: 'node_modules/'}, (err, files) => {
       if (err) {
         reject(err);
       }
 
       files.forEach((file) => {
+        // Check if file contains an array of interactions
+        if (path.basename(file).includes('interactions')) {
+          const fileInteractions = require(`${process.cwd()}/${file}`)(Pact.Matchers); // eslint-disable-line global-require, import/no-dynamic-require
+
+          // Add all interactions and return
+          return fileInteractions.forEach((interaction) => interactions.push(interaction));
+        }
+
+        // Single interaction files
         switch (path.extname(file)) {
           case '.js':
             interactions.push(
