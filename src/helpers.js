@@ -51,6 +51,7 @@ export function getParsedArgs (pkgContents) {
   const cmdNew = subparsers.addParser('new', {addHelp: true});
   const cmdPublish = subparsers.addParser('publish', {addHelp: true});
   const cmdVerify = subparsers.addParser('verify', {addHelp: true});
+  subparsers.addParser('config', {addHelp: true});
 
   cmdServer.addArgument(['CHOICE'], {
     action: 'store',
@@ -121,17 +122,12 @@ export function getParsedArgs (pkgContents) {
     help: 'Pact File to verify',
   });
 
-  cmdVerify.addArgument(['-u', '--states-url'], {
+  cmdVerify.addArgument(['-s', '--states-setup-url'], {
     action: 'store',
-    help: 'States Url',
+    help: 'URL to send PUT requests to setup a given provider state. Optional, required only if you provide a \'state\' in any consumer tests.',
   });
 
-  cmdVerify.addArgument(['-s', '--setup-url'], {
-    action: 'store',
-    help: 'Setup Url',
-  });
-
-  cmdVerify.addArgument(['-p', '--provider-url'], {
+  cmdVerify.addArgument(['-p', '--provider-base-url'], {
     action: 'store',
     help: 'Provider Base Url',
   });

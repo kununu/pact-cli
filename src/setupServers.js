@@ -2,40 +2,55 @@ import path from 'path';
 
 import Pact from 'pact';
 import glob from 'glob';
-import wrapper from '@pact-foundation/pact-node';
 
 import {log, readJSON} from './helpers';
+
 
 export function getInteractionsPromise () {
   return new Promise((resolve, reject) => {
     log('Searching for interaction files ...');
 
     const interactions = [];
-    glob('**/*.interaction.+(json|js)', {ignore: 'node_modules/'}, (err, files) => {
+    glob('**/*.+(interaction|interactions).+(json|js)', {ignore: 'node_modules/'}, (err, files) => {
       if (err) {
         reject(err);
       }
 
       files.forEach((file) => {
+        // Check if file contains an array of interactions
+        if (path.basename(file).includes('interactions')) {
+          const fileInteractions = require(`${process.cwd()}/${file}`)(Pact.Matchers); // eslint-disable-line global-require, import/no-dynamic-require
+
+          // Add all interactions and return
+          return fileInteractions.forEach((interaction) => interactions.push(interaction));
+        }
+
+        // Single interaction files
         switch (path.extname(file)) {
           case '.js':
-            interactions.push(
+            return interactions.push(
               require(`${process.cwd()}/${file}`)(Pact.Matchers), // eslint-disable-line
             );
-            break;
 
           case '.json':
-            interactions.push(
+            return interactions.push(
               readJSON(file),
             );
-            break;
 
           default:
-            log(`non interactionfile: ${file}`);
+            return log(`non interactionfile: ${file}`);
         }
       });
       resolve(interactions);
     });
+  });
+}
+
+function addInteractionsToProvider (provider, interactions, port) {
+  interactions.map((interaction) => {
+    const url = `(${interaction.interaction.withRequest.method}) http://localhost:${port}${interaction.interaction.withRequest.path}`;
+    log(`Add Interaction "${interaction.interaction.state}" on ${url}`);
+    return provider.addInteraction(interaction.interaction);
   });
 }
 
@@ -48,48 +63,26 @@ export default function setupServers (args, servers, interactions) {
   log('Startup Servers ...');
 
   servers.forEach((specs) => {
-    const filteredInteractions = interactions.filter((interaction) => specs.consumer === interaction.consumer &&
-        specs.provider === interaction.provider);
+    const {consumer, provider, port, ssl} = specs;
+    const filteredInteractions = interactions.filter((interaction) => consumer === interaction.consumer &&
+        provider === interaction.provider);
 
-    let sslkey = false;
-    let sslcert = false;
-
-    if (specs.sslcert && specs.sslkey) {
-      sslkey = path.resolve(process.cwd(), specs.sslkey);
-      sslcert = path.resolve(process.cwd(), specs.sslcert);
+    if (filteredInteractions.length <= 0) {
+      return log(`No Interactions for ${provider} -> ${consumer} found - not creating server`);
     }
 
-    if (filteredInteractions.length > 0) {
-      const mockserver = wrapper.createServer({
-        port: specs.port,
-        log: args.log_path,
-        dir: args.contract_dir,
-        spec: specs.spec,
-        ssl: specs.ssl,
-        sslcert,
-        sslkey,
-        consumer: specs.consumer,
-        provider: specs.provider,
-        host: specs.host,
-      });
+    const pactProvider = Pact({
+      consumer,
+      provider,
+      logLevel: 'ERROR',
+      port,
+      ssl,
+    });
 
-      mockserver.start().then(() => {
-        log(`Server for ${specs.provider} -> ${specs.consumer} started on port:${specs.port}`);
-
-        filteredInteractions.forEach((interaction) => {
-          const pactProvider = Pact({
-            consumer: interaction.consumer,
-            provider: interaction.provider,
-            port: specs.port,
-            ssl: specs.ssl,
-          });
-          const url = `(${interaction.interaction.withRequest.method}) http://localhost:${specs.port}${interaction.interaction.withRequest.path}`;
-          log(`Add Interaction "${interaction.interaction.state}" on ${url}`);
-          pactProvider.addInteraction(interaction.interaction);
-        });
+    return pactProvider.setup()
+      .then(() => {
+        log(`Server for ${provider} -> ${consumer} started on port:${port}`);
+        addInteractionsToProvider(pactProvider, filteredInteractions, port);
       });
-    } else {
-      log(`No Interactions for ${specs.provider} -> ${specs.consumer} found - not creating server`);
-    }
   });
 }

@@ -73,7 +73,7 @@ export function brokerConfigWizard () {
   const schema = {
     properties: {
       brokerUrl: {
-        message: 'URL to fetch the provider states for the given provider API',
+        message: 'Pact broker url',
       },
       brokerUser: {
         message: 'Username for Pact Broker basic authentication.',
