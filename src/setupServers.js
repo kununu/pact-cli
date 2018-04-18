@@ -28,19 +28,17 @@ export function getInteractionsPromise () {
         // Single interaction files
         switch (path.extname(file)) {
           case '.js':
-            interactions.push(
+            return interactions.push(
               require(`${process.cwd()}/${file}`)(Pact.Matchers), // eslint-disable-line
             );
-            break;
 
           case '.json':
-            interactions.push(
+            return interactions.push(
               readJSON(file),
             );
-            break;
 
           default:
-            log(`non interactionfile: ${file}`);
+            return log(`non interactionfile: ${file}`);
         }
       });
       resolve(interactions);
