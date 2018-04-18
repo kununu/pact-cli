@@ -51,6 +51,7 @@ export function getParsedArgs (pkgContents) {
   const cmdNew = subparsers.addParser('new', {addHelp: true});
   const cmdPublish = subparsers.addParser('publish', {addHelp: true});
   const cmdVerify = subparsers.addParser('verify', {addHelp: true});
+  const cmdConfig = subparsers.addParser('config', {addHelp: true});
 
   cmdServer.addArgument(['CHOICE'], {
     action: 'store',
