@@ -12,9 +12,8 @@ export function verify (args) {
 
   const opts = {
     pactUrls: [toValidate],
-    providerBaseUrl: args.provider_url,
-    providerStatesUrl: args.states_url,
-    providerStatesSetupUrl: args.setup_url,
+    providerBaseUrl: args.provider_base_url,
+    providerStatesSetupUrl: args.states_setup_url,
   };
 
   if (config.brokerUser.trim() !== '') {
