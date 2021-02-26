@@ -46,7 +46,7 @@
     "argparse": "1.0.9",
     "daemon": "^1.1.0",
     "glob": "7.1.1",
-    "pact": "4.2.1",
+    "pact": "4.3.2",
     "prompt": "1.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
